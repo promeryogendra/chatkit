@@ -2,9 +2,9 @@ var config = {
 	appName : "ChatKit",
 	appSubHead : "4 Things that make your realtionship strong.",
 	appSubDivData : ["Time" , "Understanding" , "Converstion" , "Honesty"],
-	socketConnecttion : "http://localhost",
+	socketConnecttion : "https://chatkitweb.herokuapp.com/",
 	socketPort : "4200",
-	api : "http://localhost:8081/api/"
+	api : "https://chatkitapi.herokuapp.com/api/"
 }
 
 var colors = {

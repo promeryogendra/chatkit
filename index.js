@@ -6,6 +6,11 @@ var PORT = process.env.PORT || 4200;
 
 const axios = require('axios')
 
+const config = {
+	host : 'https://chatkitweb.herokuapp.com/',
+	api : 'https://chatkitapi.herokuapp.com/api/'
+}
+
 var users = [];
 var onlineUserSockets = [];
 var requestUserSockets = [];
@@ -17,7 +22,7 @@ io.on('connection' ,(socket) => {
 	
 	//Login method
 	login = ( credentials , callBack) => {
-		axios.post('http://localhost:8081/api/customer/login' , {
+		axios.post(config.api+'customer/login' , {
 				"email" : credentials[0],
 				"password" : credentials[1]
 		})
@@ -45,7 +50,7 @@ io.on('connection' ,(socket) => {
 	})
 	//Verify method
 	verify = (credentials , callBack) => {
-		axios.get('http://localhost:8081/api/verifyUser' , {
+		axios.get(config.api+'verifyUser' , {
 			data: {
 				"userId": credentials[0],
       	"tokenId": credentials[1]
