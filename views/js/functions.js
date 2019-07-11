@@ -1,9 +1,11 @@
 //Initialize socket
+
 var socket = io.connect();
 
 var registerUsername = false,
 		registerEmail = false,
 		registerPassword = false;
+
 
 //Method that return element by taking id as input
 getElement = (name) => {
@@ -74,29 +76,71 @@ statusNormal = ( id , data) => {
 
 //Set data to storage
 setCurrentUser = (user) => {
-	localStorage.setItem("user", JSON.stringify(user));
+	localStorage.setItem("UserAuthInfo", JSON.stringify(user));
+	localStorage.removeItem('chatKitRequesting');
 }
 //CallBack from userdata
 getUserData = ( ) => {
-	let user = JSON.parse(localStorage.getItem('user'));
-	console.log(user);
+	let user = JSON.parse(localStorage.getItem('UserAuthInfo'));
 	if( user!=undefined &&  user.username && user.id && user.email && user.userId) {
 		return [user.userId , user.id];
 	}
-	removeCurrentUser();
-	return undefined;
+	// removeCurrentUser();
+	return [undefined, false];
 }
 
-//Get data from storage
+//Get data from storage 
 //getCurrentUser( (result , error) => {} );
+//Formate of data [ 'userId' , 'token']
 getCurrentUser = ( callBack ) => {
-	callBack(getUserData() , "No user Found...");
+	let data = getUserData();
+	if(data[1] == false) {
+		callBack(undefined , false);
+	}else {
+		callBack(data , true);
+	}
 }
-
+//get UserAuthInfo object with all object data
+getUserAuthInfo = (callBack) => {
+	let user = JSON.parse(localStorage.getItem('UserAuthInfo'));
+	if( user!=undefined &&  user.username && user.id && user.email && user.userId) {
+		callBack(user , true);
+	}
+	// removeCurrentUser();
+	callBack( undefined , false);
+}
 //Remove data from storage
 removeCurrentUser = () => {
-	localStorage.removeItem('user');
+	localStorage.removeItem('UserAuthInfo');
 }
+//Listeners that get and request data
+onLoad  = () => {
+		getUserAuthInfo((result , error) => {
+			if(!error){
+				console.log("Onload No user data present in this page.");
+				//Request other pages to give user data if present.
+				localStorage.setItem('chatKitRequesting', true);
+			} else {
+				console.log("Onload already auth data present in this page.");
+			}
+	});
+}
+onLoad();
+window.addEventListener('storage' , (event) => {
+	if (event.key == 'chatKitRequesting') {
+		getUserAuthInfo( (result , error) => {
+			if(!error) {
+				console.log("Some other tab requesting data.But i don't have data.");
+			} else {
+				localStorage.removeItem("UserAuthInfo");
+				localStorage.setItem("UserAuthInfo",JSON.stringify(result));
+			}
+		});
+	}else if(event.key == 'UserAuthInfo' && localStorage.getItem('chatKitRequesting')==true) {
+		localStorage.setItem('UserAuthInfo','');
+		localStorage.removeItem('chatKitRequesting');
+	}
+});
 
 //Is Authenticated or not
 isAuth = ( ) => {

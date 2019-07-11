@@ -3,8 +3,6 @@
 getElement('errorDiv').classList.add('hidden');
 getElement('mainDivision').classList.remove('hidden');
 
-socket.emit('one',"yogi");
-
 //Assign The App Name
 assignInitialData();
 
@@ -36,6 +34,7 @@ loginButton.addEventListener('click' , () => {
 		if(result != false) {
 			socket.emit('login' , result , (result , status) => {
 				if(status) {
+					localStorage.removeItem('chatKitRequesting');
 					setCurrentUser(result);
 					console.log("Login Success...");
 				} else {
