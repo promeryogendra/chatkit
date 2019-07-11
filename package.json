@@ -1,0 +1,21 @@
+{
+  "name": "chatkit",
+  "version": "1.0.0",
+  "description": "Chat application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index"
+  },
+  "engines": {
+    "node": "10.15.1"
+  },
+  "author": "yogendra",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.19.0",
+    "express": "^4.17.1",
+    "natural": "^0.6.3",
+    "socket.io": "^2.2.0"
+  }
+}

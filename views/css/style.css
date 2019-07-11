@@ -1,0 +1,98 @@
+/* Variables */
+:root {
+	--primary: #1ebea5;
+	--dark: #158877;
+	--light: #55c0a5;
+	--light-gray : #e2e2e2;
+	--text-primary: #212121;
+	--text-secondary: #757575; 
+	--white: #ffffff;
+	--gray: #a4a8a8;
+	--light-gray : #e2e2e2;
+	--black : #000;
+	--light-black : rgba(0, 0, 0, 0.5);
+	--tab-top : #007c00;
+}
+
+/* Resets */
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	width: 100vw;
+	height: 100vh;
+	font-family: Segoe UI,Helvetica Neue,Helvetica,Lucida Grande,Arial,Ubuntu,Cantarell,Fira Sans,sans-serif;
+	color: var(--primary-text);
+}
+
+#errorDiv {
+	  margin-top: 20%;
+}
+
+/* Layout/Flexbox */
+.flex {
+	display: flex;
+}
+
+.flex-center {
+	justify-content: center;
+	align-items: center;
+}
+
+.flex-column {
+	display: flex;
+	flex-direction: column;
+}
+
+.flex-row {
+	display: flex;
+	flex-direction: row;
+}
+
+.flex-grow-1 {
+	flex-grow: 1;
+}
+
+.container {
+	max-width: 600px;
+	margin: 0 auto;
+}
+
+.hidden {
+	display: none;
+}
+
+.mb-2 {
+	margin-bottom: 20px;
+}
+
+/* Text Classes */
+.primary-text {
+	color: var(--primary-text);
+}
+
+.secondary-text {
+	color: var(--secondary-text);
+}
+
+.light-text {
+	color: var(--light-blue);
+}
+
+.text-center {
+	text-align: center;
+}
+
+h1 {
+	font-size: 48px;
+	font-weight: 500;
+}
+
+/* Main Div */
+#mainDivision {
+	height: 100%;
+	width: 100%;
+} 
