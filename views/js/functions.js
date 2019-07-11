@@ -79,6 +79,7 @@ setCurrentUser = (user) => {
 //CallBack from userdata
 getUserData = ( ) => {
 	let user = JSON.parse(localStorage.getItem('user'));
+	console.log(user);
 	if( user!=undefined &&  user.username && user.id && user.email && user.userId) {
 		return [user.userId , user.id];
 	}
