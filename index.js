@@ -27,7 +27,6 @@ io.on('connection' ,(socket) => {
 				"password" : credentials[1]
 		})
 		.then((response) => {
-			console.log(error);
 			if(response.status == 200) {
 				callBack(response.data , true);
 			}else {
