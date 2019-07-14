@@ -1,10 +1,11 @@
 var express = require('express');
 var app =express();
-var http = require('http').Server(app);
+var http = require('http').createServer(app);
 var io = require('socket.io')( http );
 var PORT = process.env.PORT || 4200;
 
 const axios = require('axios')
+
 
 const config = {
 	host : 'https://chatkitweb.herokuapp.com/',
@@ -70,9 +71,77 @@ io.on('connection' ,(socket) => {
 	socket.on('verify' , (data , callBack) => {
 		verify(data , callBack);
 	})
-	
+		//VerifyUsername method
+	verifyUsername = (credentials , callBack) => {
+		axios.get(config.api+'check' , {
+			data : {
+				"checkName" : credentials[0],
+				"username" : credentials[1],
+				"email":credentials[2]
+			}
+		})
+		.then((response) => {
+			if(response.status == 200) {
+					console.log(credentials[0] + " exists");
+					callBack(true);
+			} else {
+				console.log(credentials[0] + " Not exists");
+				callBack(false);
+			}
+		})
+		.catch((error) => {	
+			callBack('error');
+		})
+	}
+	//VerifyEmail method
+	verifyEmail = (credentials , callBack) => {
+		axios.get(config.api+'check' , {
+			data : {
+				"checkName" : credentials[0],
+				"username" : credentials[1],
+				"email":credentials[2]
+			}
+		})
+		.then((response) => {
+			if(response.status == 200) {
+					console.log(credentials[0] + " exists");
+					callBack(true);
+			} else {
+				console.log(credentials[0] + " Not exists");
+				callBack(false);
+			}
+		})
+		.catch((error) => {
+			callBack('error');
+		})
+	}
+	//VerifyUserField call listen
+	socket.on('verifyField' , (data , callBack) => {
+		if(data[0] === 'username') {
+			verifyUsername(data , callBack);
+		}else if(data[0] === 'email') {
+			verifyEmail(data , callBack);
+		} else {
+			callBack('error');
+		}
+	})
 })
 
 http.listen(PORT , ()=> {
 	console.log("Server running on port 4200");
 })
+
+app.get('/',(req,res) => {
+	res.header('Content-type', 'text/html');
+  return res.end('<h1>Hello, Secure World!</h1>');
+})
+
+//we can user this to redirect to another page
+// app.use( function(req, res, next) {
+//     if (req.url == '/') {
+//         res.redirect('/index.html');
+// 				next();
+//     } else {
+//         next();
+//     }
+// });

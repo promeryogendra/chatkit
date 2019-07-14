@@ -1,7 +1,23 @@
 /* Width above 768 almost all laptops and monitors */
 
 @media screen and (min-width: 768px) {
-	
+	#loading{
+		z-index: 2;
+		position: absolute;
+		top: 0;
+		left: 0;
+		background: rgba(231, 229, 247, 0.7);
+	}
+	#loadingimg{
+		width: 100vw;
+		height: 100vh;
+		opacity: 1;
+	}
+	#loadingimg img {
+		position: absolute;
+		top: 35%;
+		left: 40%;
+	}
 	#mainDivision {
 		background: var(--light-gray);
 	}

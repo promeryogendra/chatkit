@@ -5,15 +5,19 @@ getElement('mainDivision').classList.remove('hidden');
 
 //Assign The App Name
 assignInitialData();
-
-getCurrentUser( (result , error) => {
+//Call init Function to check user auth
+async function init() {
+	loading();
+	let [result , error] = await synchronous(getCurrentUser);
+	console.log("loading...");
 	if(!error){
 		console.log("No user.");
 	} else {
-		isAuth();
+		await isAuth();
 	}
-} );
-
+	removeLoading();
+}
+init();
 //Set the color theme
 changeTheme('green');
 
@@ -34,7 +38,6 @@ loginButton.addEventListener('click' , () => {
 		if(result != false) {
 			socket.emit('login' , result , (result , status) => {
 				if(status) {
-					localStorage.removeItem('chatKitRequesting');
 					setCurrentUser(result);
 					console.log("Login Success...");
 				} else {
@@ -45,4 +48,24 @@ loginButton.addEventListener('click' , () => {
 		}
 })
 
+getElement('registerEmail').addEventListener('blur' , () => {
+	validEmail();
+})
 
+getElement('registerName').addEventListener('blur' , () => {
+	validUsername();
+})
+getElement('registerPassword2').addEventListener('blur' , () => {
+	validPasswords();
+})
+getElement('registerPassword1').addEventListener('blur' , () => {
+	validPasswords();
+})
+async function callRegister() {
+	await synchronousNoCallback(register);
+}
+registerButton.addEventListener('click' , () => {
+	loading();
+	callRegister();
+	removeLoading();
+});
