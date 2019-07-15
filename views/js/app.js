@@ -6,7 +6,6 @@ getElement('mainDivision').classList.remove('hidden');
 //Assign The App Name
 assignInitialData();
 init = () => {
-	loading();
 	let [result , error]= getCurrentUser();
 	console.log("loading...");
 	if(!error){
@@ -66,11 +65,11 @@ getElement('registerPassword2').addEventListener('blur' , () => {
 })
 
 async function callRegister() {
+	loading();
 	var result = await synchronous(register);
+	// removeLoading();
 }
 
 registerButton.addEventListener('click' , () => {
-	loading();
 	callRegister();
-	removeLoading();
 });

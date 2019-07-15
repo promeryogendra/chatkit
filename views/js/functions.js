@@ -368,19 +368,52 @@ async function callValidations(funcName) {
 	callSyncFunc(validPasswords);
 	getElement("registerEmail").blur();
 }
+showRegisterSuccess = () => {
+
+}
 function register ()  {
 	loading();
 	let registerEmail = getElement('registerEmail');
 	let registerName = getElement('registerName');
 	let registerPassword1 = getElement('registerPassword1');
-	let registerPassword2 = getElement('registerPassword2');
+	let registerStatus = getElement('registerStatus');
 	
 	console.log(registerEmailStatus , registerUsernameStatus , registerPasswordStatus);
 	if(registerEmailStatus && registerUsernameStatus && registerPasswordStatus){
 		console.log("register");
 		callValidations();
-		socket.emit('register' , "Asd" , (status) => {
+		socket.emit('register' , [registerEmail.value,registerName.value,registerPassword1.value] , (status) => {
 			removeLoading();
+			if(status == false) {
+				registerError("Server issue...");
+			}else{
+				console.log(status);
+				switch(status) {
+					case "SUCCESS": 
+						statusNormal("registerStatus","Please check mail to verify.<br>Check your spam if link not found.");
+						break;
+					case "EMAIL_INVALID":
+						registerError("Invalid Email...");
+						focusAndShowError(registerEmail);
+						break;
+					case "EMAIL_EXISTS":
+						registerError("Email Already Exists...");
+						focusAndShowError(registerEmail);
+						break;
+					case "USERNAME_EXISTS":
+						registerError("Username Already Exists...");
+						focusAndShowError(registerName);
+						break;
+					case "USERNAME_LENGTH":
+						registerError("Username Length is less...");
+						focusAndShowError(registerName);
+						break;
+					case "PASSWORD_LENGTH":
+						registerError("Password Length is less...");
+						focusAndShowError(registerPassword1);
+						break;
+				}
+			}
 			console.log(status);
 		});
 	}
