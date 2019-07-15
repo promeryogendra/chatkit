@@ -322,11 +322,15 @@ validUsername = () => {
 	}
 }
 //Check username AVAILABLE OR not
+function isEmailValid(email) {
+    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+}
 //Checking the email available or not in the api
 validEmail = () => {
 	registerEmailStatus = false;
 	let email = getElement('registerEmail');
-	if(email.value.length <= 3) {
+	if(!isEmailValid(email.value)) {
 		registerError('Email is not valid...');
 		focusAndShowError(email);
 		return false;
