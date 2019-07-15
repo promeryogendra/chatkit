@@ -31,18 +31,13 @@ assignInitialData = () => {
 		getElement('homeDivTextList').innerHTML += `<li>${element}</li>`;
 	})
 }
-//Synchronous with callback
+//Synchronous call
 synchronous = (funcName) => {
 	return new Promise(function (resolve) {
 		funcName((result)=>{
+			console.log(result);
 			return resolve(result);
 		})
-  });
-}
-//Synchronous withour callback
-synchronousNoCallback = (funcName) => {
-	return new Promise(function (resolve) {
-			return resolve(funcName());
   });
 }
 //Loading Please
@@ -106,7 +101,7 @@ setCurrentUser = (user) => {
 	document.cookie = "UserAuthInfo=" + JSON.stringify(user) + ";" + "max-age="+ 60*60*3 + ";path=/; samesite=strict;";
 }
 //get UserAuthInfo object with all object data
-getUserAuthCookie = (callBack) => {
+getUserAuthCookie = () => {
 	var decodedCookie = decodeURIComponent(document.cookie);
 	var cookies = decodedCookie.split(';');
 	for(let cookie of cookies) {
@@ -116,25 +111,20 @@ getUserAuthCookie = (callBack) => {
 			try {
 				let user  = JSON.parse(cookieData);
 				if( user!=undefined &&  user.username && user.id && user.email && user.userId) {
-					return callBack(user , true);
+					return ([user , true]);
 				}
 				console.log("un reachable");
 			}catch (error) {
 				console.log(1);
-				return callBack(undefined , false);
+				return ([undefined , false]);
 			}
 		}
 	}
-	callBack(undefined , false);
+	return ([undefined , false]);
 }
 //CallBack from userdata
-getUserData = ( callBack ) => {
-	let user ;
-	let status ;
-	getUserAuthCookie( (result , error) => {
-		user = result;
-		status = error;
-	})
+getUserData = () => {
+	let[user , status] = getUserAuthCookie();
 	if(status) {
 		return ([user.userId , user.id]);
 	} else {
@@ -145,13 +135,12 @@ getUserData = ( callBack ) => {
 //Get data from storage 
 //getCurrentUser( (result , error) => {} );
 //Formate of data [ 'userId' , 'token']
-getCurrentUser = ( callBack ) => {
+getCurrentUser = ( ) => {
 	let data = getUserData();
 	if(data[1] == false) {
-		console.log("yes");
-		callBack([undefined , false]);
+		return ([undefined , false]);
 	}else {
-		callBack([data , true]);
+		return ([data , true]);
 	}
 }
 
@@ -180,8 +169,8 @@ isNoSpecialChracters = (text) => {
 }
 
 //Is Authenticated or not
-async function isAuth ( ) {
-	let [result , error] = await synchronous(getCurrentUser);
+isAuth = ( ) => {
+	let [result , error] = getCurrentUser();
 	if(result) {
 		socket.emit('verify' , [result[0] , result[1]], (status) => {
 			if(status) {
@@ -330,15 +319,14 @@ validEmail = () => {
 		}
 	}
 }
-function register () {
+register = () => {
 	let registerEmail = getElement('registerEmail');
 	let registerName = getElement('registerName');
 	let registerPassword1 = getElement('registerPassword1');
 	let registerPassword2 = getElement('registerPassword2');
-	console.log(1);
-	console.log(validEmail());
-	if(validEmail() && validUsername() && validPasswords()) {
-		console.log("valid registration");
+	console.log(registerEmailStatus , registerUsernameStatus , registerPasswordStatus);
+	if(registerEmailStatus && registerUsernameStatus && registerPasswordStatus){
+		console.log("register");
 	}
 	console.log(2);
 }
