@@ -125,6 +125,47 @@ io.on('connection' ,(socket) => {
 			callBack('error');
 		}
 	})
+//Register api call
+	
+	register = ( creadentials ) => {
+		axios.post(config.api+"customer" , {
+				"email" : creadentials[0],
+				"username" : creadentials[1],
+				"password" : creadentials[2]
+		})
+		.then((response) => {
+			console.log(response.body);
+		})
+		.catch((error) => {
+			let err = error.response.data.error;
+			if(err.statusCode == 422) {
+				let codes = err.details.codes;
+				if(codes.email != undefined && codes.email.length >0 && codes.email[0] == 'custom.email') {
+					console.log("Enter valid email");
+				} else if(codes.email != undefined && codes.email.length >0 && codes.email[0] === 'uniqueness') {
+					console.log("EMAIL ALREADY EXISTS");
+				} else if( codes.username != undefined && codes.username.length >0 && codes.username[0] === 'uniqueness'){
+					console.log("USERNAME ALREADY EXISTS");
+				}	else {
+					console.log("UNKNOWN ERROR");
+				}
+			}else {
+				let errorResponse = error.response.data.error;
+				if(errorResponse.status == 400){
+					if(errorResponse.code == "USERNAME_LENGTH") {
+						console.log("USERNAME_LENGTH");
+					} else if(errorResponse.code == "PASSWORD_LENGTH") {
+						console.log("PASSWORD_LENGTH");
+					}
+				}
+			}	
+		})
+	}
+	//Register socket listern
+	socket.on('register' , (data , callBack) => {
+		console.log("1");
+		callBack('error');
+	})
 })
 
 http.listen(PORT , ()=> {

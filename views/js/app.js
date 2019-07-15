@@ -34,9 +34,11 @@ verifyTab.addEventListener( 'click' , () => {
 });
 //Event listener for login button
 loginButton.addEventListener('click' , () => {
+	loading();
 		var result = login();
 		if(result != false) {
 			socket.emit('login' , result , (result , status) => {
+				removeLoading();
 				if(status) {
 					setCurrentUser(result);
 					console.log("Login Success...");
@@ -48,24 +50,27 @@ loginButton.addEventListener('click' , () => {
 		}
 })
 
+
 getElement('registerEmail').addEventListener('blur' , () => {
-	registerEmailStatus=false;
-	registerEmailStatus=validEmail();
+	callSyncFunc(validEmail);
 })
 
 getElement('registerName').addEventListener('blur' , () => {
-	registerUsernameStatus=false;
-	registerUsernameStatus=validUsername();
+	callSyncFunc(validUsername);
 })
 getElement('registerPassword1').addEventListener('blur' , () => {
-	registerPasswordStatus=false;
-	registerPasswordStatus=validPasswords();
+	callSyncFunc(validPasswords);
 })
 getElement('registerPassword2').addEventListener('blur' , () => {
-	registerPasswordStatus=false;
-	registerPasswordStatus=validPasswords();
+	callSyncFunc(validPasswords);
 })
 
+async function callRegister() {
+	var result = await synchronous(register);
+}
+
 registerButton.addEventListener('click' , () => {
-	var result = register();
+	loading();
+	callRegister();
+	removeLoading();
 });

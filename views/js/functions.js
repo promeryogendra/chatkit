@@ -30,24 +30,31 @@ assignInitialData = () => {
 	config.appSubDivData.forEach(element => {
 		getElement('homeDivTextList').innerHTML += `<li>${element}</li>`;
 	})
+	getElement("registerEmail").value = "";
+	getElement("registerName").value = "";
+	getElement("registerPassword1").value = "";
+	getElement("registerPassword2").value = "";
 }
 //Synchronous call
 synchronous = (funcName) => {
 	return new Promise(function (resolve) {
-		funcName((result)=>{
-			console.log(result);
-			return resolve(result);
-		})
+			return resolve(funcName());
   });
 }
+//Synchronous call
+async function callSyncFunc(funcName) {
+	return await synchronous(funcName);
+}
+
 //Loading Please
 loading = () => {
 	let loader = getElement("loading");
 	loader.style.zIndex = 2;
 	let main = getElement("Authentication");
-	main.style.zIndex = -1;
+	main.style.zIndex = 1;
 	loader.classList.remove('hidden');
 }
+loading();
 //Remove loading
 removeLoading = () => {
 	let loader = getElement("loading");
@@ -156,6 +163,7 @@ focusAndShowError = (element) => {
 }
 //After custome focus error
 clearValidationError = (element) => {
+	statusNormal('registerStatus',"Please Fill all fields...");
 	element.style.borderColor = "black";
 }
 //Any special characters or not
@@ -173,6 +181,7 @@ isAuth = ( ) => {
 	let [result , error] = getCurrentUser();
 	if(result) {
 		socket.emit('verify' , [result[0] , result[1]], (status) => {
+			removeLoading();
 			if(status) {
 				console.log("User Authenticated...");
 			} else {
@@ -215,12 +224,22 @@ registerError =  (error) => {
 	let status = getElement('registerStatus');
 	status.innerHTML = error;
 	status.style.color = "red";
-	setTimeout(() => {
-		statusNormal('registerStatus',"Enter Valid data...");
-	}, 2000);
+	getElement("registerButton").classList.add("hidden");
+	// setTimeout(() => {
+	// 	statusNormal('registerStatus',"Enter Valid data...");
+	// }, 2500);
 }
 //Checking passwords are matching and having length more than 6
 validPasswords = () => {
+	if(!registerEmailStatus){
+		getElement("registerEmail").focus();
+		return;
+	};
+	if(!registerUsernameStatus){
+		getElement("registerName").focus();
+		return;
+	};
+	registerPasswordStatus=false;
 	let password1 = getElement('registerPassword1');
 	let password2 = getElement('registerPassword2');
 	
@@ -229,6 +248,10 @@ validPasswords = () => {
 			if(isNoSpecialChracters(password1.value)) {
 				clearValidationError(password1);
 				clearValidationError(password2);
+				registerPasswordStatus=true;
+				if(registerPasswordStatus && registerUsernameStatus && registerEmailStatus) {
+					getElement("registerButton").classList.remove('hidden');
+				}
 				return true;
 			} else {
 				registerError('Password should not contain special characters...');
@@ -258,6 +281,11 @@ validPasswords = () => {
 }
 //Cheking username available or not in the api
 validUsername = () => {
+	if(!registerEmailStatus){
+		getElement("registerEmail").focus();
+		return;
+	};
+	registerUsernameStatus = false;
 	let username = getElement('registerName');
 	if(username.value.length < 6) {
 		registerError('Username must have atleast 6 characters...');
@@ -270,7 +298,9 @@ validUsername = () => {
 			return false;
 		} else {
 			let data = ['username' , username.value , ''];
+			loading();
 			socket.emit('verifyField' , data , ( status) => {
+				removeLoading();
 				if(status) {
 					registerError('Username Already Taken...');
 					focusAndShowError(username);
@@ -280,6 +310,10 @@ validUsername = () => {
 					focusAndShowError(username);
 					return false;
 				} else {
+					registerUsernameStatus=true;
+					if(registerPasswordStatus && registerUsernameStatus && registerEmailStatus) {
+						getElement("registerButton").classList.remove('hidden');
+					}
 					clearValidationError(username);
 					return true;
 				}
@@ -290,6 +324,7 @@ validUsername = () => {
 //Check username AVAILABLE OR not
 //Checking the email available or not in the api
 validEmail = () => {
+	registerEmailStatus = false;
 	let email = getElement('registerEmail');
 	if(email.value.length <= 3) {
 		registerError('Email is not valid...');
@@ -302,7 +337,9 @@ validEmail = () => {
 			return false;
 		} else {
 			let data = ['email' , '' , email.value];
+			loading()
 			socket.emit('verifyField' , data , (status) => {
+				removeLoading();
 				if(status) {
 					registerError('Email Already Taken...');
 					focusAndShowError(email);
@@ -313,20 +350,39 @@ validEmail = () => {
 					return false;
 				} else {
 					clearValidationError(email);
+					registerEmailStatus=true;
+					if(registerPasswordStatus && registerUsernameStatus && registerEmailStatus) {
+						getElement("registerButton").classList.remove('hidden');
+					}
 					return true;
 				}
 			})
 		}
 	}
 }
-register = () => {
+//Async call validation function
+async function callValidations(funcName) {
+	loading();
+	callSyncFunc(validEmail);
+	callSyncFunc(validUsername);
+	callSyncFunc(validPasswords);
+	getElement("registerEmail").blur();
+}
+function register ()  {
+	loading();
 	let registerEmail = getElement('registerEmail');
 	let registerName = getElement('registerName');
 	let registerPassword1 = getElement('registerPassword1');
 	let registerPassword2 = getElement('registerPassword2');
+	
 	console.log(registerEmailStatus , registerUsernameStatus , registerPasswordStatus);
 	if(registerEmailStatus && registerUsernameStatus && registerPasswordStatus){
 		console.log("register");
+		callValidations();
+		socket.emit('register' , "Asd" , (status) => {
+			removeLoading();
+			console.log(status);
+		});
 	}
 	console.log(2);
 }

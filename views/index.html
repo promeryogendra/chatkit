@@ -64,14 +64,14 @@
 											<form id="registerForm" onsubmit="return false;" class="flex-column">
 												
 												<p id="registerStatus" class="text-center status">Fill the data.</p>
-												<input type="email" placeholder="Email" id="registerEmail" class="input" required oninvalid="setCustomValidity('Enter a valid Email.')" oninput="setCustomValidity('')" > 
+												<input type="email" placeholder="Email" id="registerEmail" class="input" required oninvalid="callSyncFunc(validEmail);" oninput="setCustomValidity('')" > 
 												<br>
-												<input type="text" placeholder="Name" id="registerName" class="input" required minlength="4" oninvalid="setCustomValidity('Name length should be atleast 4 characters.');" oninput="setCustomValidity('')" >
+												<input type="text" placeholder="Name" id="registerName" class="input" required minlength="4" oninvalid="callSyncFunc(validUsername);" oninput="setCustomValidity('')"  >
 												<br>
 												<input type="password" name="Password" id="registerPassword1" class="input" minlength="6" placeholder="Password" oninvalid="setCustomValidity('Password must contain atleast 6 characters.')" oninput="setCustomValidity('')" >
 												<br>
 												<input type="password" name="Password" id="registerPassword2" class="input" minlength="6" placeholder="Retype Pssword" oninvalid="setCustomValidity('Password must contain atleast 6 characters.')" oninput="setCustomValidity('')" >
-												<button type="submit" id="registerButton" class="btn">Register</button>
+												<button type="submit" id="registerButton" class="btn hidden">Register</button>
 											</form>
 										</div>
 									</div>
