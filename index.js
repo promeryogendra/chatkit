@@ -39,16 +39,19 @@ userOffline = (user) => {
 }
 assignUserData = (user , data) => {
 	friendsList[user.userId] = [];
-	data.forEach(friend => {
+	let friends = data['friends'];
+	friends.forEach(friend => {
 		if(friend.user1 === user.userId) {
 			let friendObject = createObject(friend.user2 , friend.user2username , friend.user2email , friend.id , "user2");
 			friendsList[user.userId].push(friendObject);
 		}else {
-			let friendsList = createObject(friend.user1 , friend.user1username , friend.user1email , friend.id , "user1");
+			let friendObject = createObject(friend.user1 , friend.user1username , friend.user1email , friend.id , "user1");
 			friendsList[user.userId].push(friendObject);
 		}
 	});
+	requestList[user.userId] = data['requests'];
 }
+//emit a dynamic event ot friends
 sendFriends = (emitEventName , data , userId) => {
 	if(friendsList[userId] != undefined && friendsList[userId].length != 0) {
 		friendsList[userId].forEach(user => {
@@ -59,6 +62,16 @@ sendFriends = (emitEventName , data , userId) => {
 			}
 		});
 	}
+}
+//Process the data
+preProcess = (user , data , callBack) => {
+	let friends = friendsList[user.userId];
+	let requests = requestList[user.userId];
+	let messages = {};
+	data["friends"].forEach(friend => {
+		messages[friend.id] = friend.messages;
+	});
+	callBack([friends , messages , requests],true);
 }
 io.on('connection' ,(socket) => {
 	console.log("Socket Connection made...");
@@ -79,7 +92,8 @@ io.on('connection' ,(socket) => {
 		.then((response) => {
 			if(response.status == 200) {
 				assignUserData(user , response.data);
-				callBack(response.data , true);
+				preProcess(user, response.data , callBack);
+				// callBack(response.data , true);
 			} else {
 				console.log("data not found");
 				callBack(undefined, false);
