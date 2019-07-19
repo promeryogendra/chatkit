@@ -13,7 +13,6 @@ init = () => {
 	} else {
 		isAuth();
 	}
-	removeLoading();
 }
 init();
 
@@ -40,6 +39,7 @@ loginButton.addEventListener('click' , () => {
 				removeLoading();
 				if(status) {
 					setCurrentUser(result);
+					authSuccess();
 					console.log("Login Success...");
 					callInitialFetch();
 				} else {

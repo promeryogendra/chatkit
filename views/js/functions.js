@@ -62,6 +62,21 @@ removeLoading = () => {
 	let element = getElement("Authentication");
 	element.style.zIndex = 2;
 }
+//Loading Please
+authLoading = () => {
+	let loader = getElement("loading");
+	loader.style.zIndex = 2;
+	let main = getElement("chat");
+	main.style.zIndex = 1;
+	loader.classList.remove('hidden');
+}
+//Remove loading 
+authRemoveLoading = () => {
+	let loader = getElement("loading");
+	loader.classList.add('hidden');
+	let element = getElement("chat");
+	element.style.zIndex = 2;
+}
 //Methid that handle the tab clicks
 changeLoginTab = () => {
 	var loginTab = getElement('tabLogin');
@@ -175,6 +190,12 @@ isNoSpecialChracters = (text) => {
 	}
 	return true;
 }
+//After successful login
+authSuccess = () => {
+	removeLoading();
+	getElement("appHome").classList.add('hidden');
+	getElement("userHome").classList.remove("hidden");
+}
 //CALL initial fetch
 initialFetch = () => {
 	let[user , status] = getUserAuthCookie();
@@ -182,13 +203,13 @@ initialFetch = () => {
 		console.log ("before initial fetch",user);
 		socket.emit("afterAuth" , user , (data , status) => {
 			console.log(data,status);
+			authSuccess();
 			removeLoading();
 		})
 	} else {
 		removeLoading();
 		return ([undefined, false]);
 	}
-	
 }
 //Call Synchronous Initial fetch method
 async function callInitialFetch() {
@@ -200,11 +221,11 @@ isAuth = ( ) => {
 	let [result , error] = getCurrentUser();
 	if(result) {
 		socket.emit('verify' , [result[0] , result[1]], (status) => {
-			removeLoading();
 			if(status) {
 				console.log("User Authenticated...");
 				callInitialFetch();
 			} else {
+				removeLoading();
 				removeCurrentUser();
 				console.log("User UnAuthenticated");
 			}
@@ -246,9 +267,6 @@ registerError =  (error) => {
 	status.innerHTML = error;
 	status.style.color = "red";
 	getElement("registerButton").classList.add("hidden");
-	// setTimeout(() => {
-	// 	statusNormal('registerStatus',"Enter Valid data...");
-	// }, 2500);
 }
 //Checking passwords are matching and having length more than 6
 validPasswords = () => {
