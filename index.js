@@ -6,21 +6,105 @@ var PORT = process.env.PORT || 4200;
 
 const axios = require('axios')
 
-
 const config = {
 	host : 'https://chatkitweb.herokuapp.com/',
 	api : 'https://chatkitapi.herokuapp.com/api/'
 }
 
-var users = [];
-var onlineUserSockets = [];
-var requestUserSockets = [];
+var onlineUserSockets = {};
+var friendsList = {};
+var requestList = {};
 
 app.use(express.static('views'));
 
+userCheck = (user) => {
+	if(onlineUserSockets[user.userId] == undefined) {
+		return true;
+	}
+	return false;
+}
+createObject = (userId , username, email, relation , place) => {
+	return {
+		friendId : relation,
+		username : username,
+		email : email,
+		userId : userId,
+		place : place
+	}
+}
+userOffline = (user) => {
+	delete onlineUserSockets[user.userId];
+	delete friendsList[user.userId];
+	console.log(user.username , " went offline");
+}
+assignUserData = (user , data) => {
+	friendsList[user.userId] = [];
+	data.forEach(friend => {
+		if(friend.user1 === user.userId) {
+			let friendObject = createObject(friend.user2 , friend.user2username , friend.user2email , friend.id , "user2");
+			friendsList[user.userId].push(friendObject);
+		}else {
+			let friendsList = createObject(friend.user1 , friend.user1username , friend.user1email , friend.id , "user1");
+			friendsList[user.userId].push(friendObject);
+		}
+	});
+}
+sendFriends = (emitEventName , data , userId) => {
+	if(friendsList[userId] != undefined && friendsList[userId].length != 0) {
+		friendsList[userId].forEach(user => {
+			if(onlineUserSockets[user.userId] != undefined ){
+				let socket =  onlineUserSockets[user.userId]
+				socket.emit(emitEventName , data);
+				console.log(user.username+" online so sending offline message event.");
+			}
+		});
+	}
+}
 io.on('connection' ,(socket) => {
 	console.log("Socket Connection made...");
-	
+	//On connection Lost
+	socket.on('disconnect', () => {
+		if(socket.user != undefined && socket.user != {}) {
+			sendFriends("offline",undefined, socket.user.userId);
+			userOffline(socket.user);
+		}
+	})
+	//Initial call get data from server
+	getInitialData = ((user,callBack) => {
+		axios.get(config.api+'initial' , {
+			data: {
+				"userId": user.userId
+    	}
+		})
+		.then((response) => {
+			if(response.status == 200) {
+				assignUserData(user , response.data);
+				callBack(response.data , true);
+			} else {
+				console.log("data not found");
+				callBack(undefined, false);
+			}
+		})
+		.catch((error) => {
+			callBack(undefined , false);
+		})
+	})
+	//Initial call
+	initialCall = (user,callBack) => {
+		if(userCheck(user)) {
+			socket.user = user;
+			onlineUserSockets[user.userId] = socket;
+			let soc = onlineUserSockets[user.userId];
+			getInitialData(user,callBack);
+		}else {
+			//User already exists
+		}
+	}
+	//After successfull login
+	socket.on("afterAuth" , (user , callBack) => {
+		console.log("inital call",user);
+		initialCall(user,callBack);
+	});
 	//Login method
 	login = ( credentials , callBack) => {
 		axios.post(config.api+'customer/login' , {
@@ -35,7 +119,6 @@ io.on('connection' ,(socket) => {
 			}
 		})
 		.catch((error) => {
-			console.log(error);
 				callBack(undefined , false);
 		})
 	}

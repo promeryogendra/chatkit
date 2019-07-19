@@ -175,7 +175,26 @@ isNoSpecialChracters = (text) => {
 	}
 	return true;
 }
-
+//CALL initial fetch
+initialFetch = () => {
+	let[user , status] = getUserAuthCookie();
+	if(status) {
+		console.log ("before initial fetch",user);
+		socket.emit("afterAuth" , user , (data , status) => {
+			console.log(data,status);
+			removeLoading();
+		})
+	} else {
+		removeLoading();
+		return ([undefined, false]);
+	}
+	
+}
+//Call Synchronous Initial fetch method
+async function callInitialFetch() {
+	loading();
+	await synchronous(initialFetch);
+}
 //Is Authenticated or not
 isAuth = ( ) => {
 	let [result , error] = getCurrentUser();
@@ -184,6 +203,7 @@ isAuth = ( ) => {
 			removeLoading();
 			if(status) {
 				console.log("User Authenticated...");
+				callInitialFetch();
 			} else {
 				removeCurrentUser();
 				console.log("User UnAuthenticated");
@@ -191,6 +211,7 @@ isAuth = ( ) => {
 		})
 	} else {
 		console.log(error);
+		return false;
 	}
 }
 //Check user can proceed login or not
@@ -380,20 +401,21 @@ function register ()  {
 	let registerEmail = getElement('registerEmail');
 	let registerName = getElement('registerName');
 	let registerPassword1 = getElement('registerPassword1');
-	let registerStatus = getElement('registerStatus');
+	let registerPassword2 = getElement('registerPassword2');
 	
-	console.log(registerEmailStatus , registerUsernameStatus , registerPasswordStatus);
 	if(registerEmailStatus && registerUsernameStatus && registerPasswordStatus){
-		console.log("register");
 		callValidations();
 		socket.emit('register' , [registerEmail.value,registerName.value,registerPassword1.value] , (status) => {
 			removeLoading();
 			if(status == false) {
 				registerError("Server issue...");
 			}else{
-				console.log(status);
 				switch(status) {
 					case "SUCCESS": 
+						registerEmail.value="";
+						registerName.value ="";
+						registerPassword1.value = "";
+						registerPassword2.value = "";
 						statusNormal("registerStatus","Please check mail to verify.<br>Check your spam if link not found.");
 						break;
 					case "EMAIL_INVALID":
@@ -418,8 +440,7 @@ function register ()  {
 						break;
 				}
 			}
-			console.log(status);
 		});
 	}
-	console.log(2);
 }
+

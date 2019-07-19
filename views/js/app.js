@@ -41,6 +41,7 @@ loginButton.addEventListener('click' , () => {
 				if(status) {
 					setCurrentUser(result);
 					console.log("Login Success...");
+					callInitialFetch();
 				} else {
 					loginError('loginStatus');
 					console.log("Login Failure...");
@@ -67,9 +68,10 @@ getElement('registerPassword2').addEventListener('blur' , () => {
 async function callRegister() {
 	loading();
 	var result = await synchronous(register);
-	// removeLoading();
+	
 }
 
 registerButton.addEventListener('click' , () => {
 	callRegister();
+	
 });
