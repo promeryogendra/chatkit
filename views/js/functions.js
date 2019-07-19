@@ -1,5 +1,5 @@
-//Initialize socket
 
+//Initialize socket
 var socket = io.connect();
 
 var registerUsernameStatus = false,
@@ -10,6 +10,10 @@ var registerUsernameStatus = false,
 getElement = (name) => {
 	return document.getElementById(name);
 }
+
+//If The javascript is enabled start doing
+getElement('errorDiv').classList.add('hidden');
+getElement('mainDivision').classList.remove('hidden');
 
 //Method to change the theme
 changeTheme = (color) => {

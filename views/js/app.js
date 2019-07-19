@@ -1,8 +1,4 @@
 
-//If The javascript is enabled start doing
-getElement('errorDiv').classList.add('hidden');
-getElement('mainDivision').classList.remove('hidden');
-
 //Assign The App Name
 assignInitialData();
 init = () => {
