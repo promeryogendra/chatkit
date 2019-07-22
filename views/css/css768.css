@@ -70,10 +70,10 @@
 		transition: 0.5s ease;
 		position: relative;
 		z-index: 2; 
-		margin-top: -100px;
-		max-width: 950px;
+		margin-top: -180px;
+		max-width: 95vw;
 		background: var(--white);
-		height: 80vh;
+		height: 92vh;
 		justify-content: center;
 	}
 	#columns {
@@ -216,7 +216,7 @@
 	}
 	#chat {
 		transition: 0.5s ease;
-		max-width: 800px;
+		max-width: 92vw;
 	}
 }
 @media screen and (max-width: 900px) {
@@ -227,7 +227,7 @@
 	}
 	#Authentication {
 		transition: 0.5s ease;
-		max-width: 750px;
+		max-width: 92vw;
 	}
 	#chat {
 		transition: 0.5s ease;
