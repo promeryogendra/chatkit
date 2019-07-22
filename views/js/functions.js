@@ -235,6 +235,7 @@ isAuth = ( ) => {
 			}
 		})
 	} else {
+		removeLoading();
 		console.log(error);
 		return false;
 	}

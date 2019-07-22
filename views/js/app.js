@@ -5,6 +5,7 @@ init = () => {
 	let [result , error]= getCurrentUser();
 	console.log("loading...");
 	if(!error){
+		removeLoading();
 		console.log("No user.");
 	} else {
 		isAuth();
