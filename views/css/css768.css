@@ -216,7 +216,7 @@
 	}
 	#chat {
 		transition: 0.5s ease;
-		max-width: 92vw;
+		max-width: 95vw;
 	}
 }
 @media screen and (max-width: 900px) {
@@ -227,10 +227,10 @@
 	}
 	#Authentication {
 		transition: 0.5s ease;
-		max-width: 92vw;
+		max-width: 750px;
 	}
 	#chat {
 		transition: 0.5s ease;
-		max-width: 750px;
+		max-width: 95vw;
 	}
 }
