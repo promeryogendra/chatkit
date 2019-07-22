@@ -63,9 +63,29 @@ sendFriends = (emitEventName , data , userId) => {
 		});
 	}
 }
+//Get opposite place
+getUserPlaces = (friend , user) => {
+	if(friend.user1 === user.userId) {
+		return ["user1" , "user2"];
+	}else if(friend.user2 === user.userId) {
+		return ["user2","user1"];
+	} 
+	return [null , null];
+}
 //Process the data
 preProcess = (user , data , callBack) => {
-	let friends = friendsList[user.userId];
+	// let friends = friendsList[user.userId];
+	let friends = data["friends"];
+	friends.forEach(friend => {
+		let userPlaces = getUserPlaces(friend,user);
+		friend.place = userPlaces[0];
+		if(onlineUserSockets[friend[userPlaces[1]]] == undefined) {
+			friend.status = "offline"
+		} else {
+			friend.status = "online";
+		}
+		delete friends["messages"];
+	});
 	let requests = requestList[user.userId];
 	let messages = {};
 	data["friends"].forEach(friend => {
