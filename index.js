@@ -84,7 +84,7 @@ preProcess = (user , data , callBack) => {
 		} else {
 			friend.status = "online";
 		}
-		delete friends["messages"];
+		delete friend.messages;
 	});
 	let requests = requestList[user.userId];
 	let messages = {};
