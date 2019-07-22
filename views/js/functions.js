@@ -163,6 +163,7 @@ getUserData = () => {
 //Formate of data [ 'userId' , 'token']
 getCurrentUser = ( ) => {
 	let data = getUserData();
+	console.length(data);
 	if(data[1] == false) {
 		return ([undefined , false]);
 	}else {
