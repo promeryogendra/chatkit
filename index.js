@@ -76,9 +76,11 @@ getUserPlaces = (friend , user) => {
 preProcess = (user , data , callBack) => {
 	// let friends = friendsList[user.userId];
 	let friends = data["friends"];
+	let messages = {};
 	friends.forEach(friend => {
 		let userPlaces = getUserPlaces(friend,user);
 		friend.place = userPlaces[0];
+		messages[friend[userPlaces[1]]] = friend.messages;
 		if(onlineUserSockets[friend[userPlaces[1]]] == undefined) {
 			friend.status = "offline"
 		} else {
@@ -87,10 +89,9 @@ preProcess = (user , data , callBack) => {
 		delete friend.messages;
 	});
 	let requests = requestList[user.userId];
-	let messages = {};
-	data["friends"].forEach(friend => {
-		messages[friend.id] = friend.messages;
-	});
+	// data["friends"].forEach(friend => {
+	// 	messages[friend.id] = friend.messages;
+	// });
 	callBack([friends , messages , requests],true);
 }
 io.on('connection' ,(socket) => {
