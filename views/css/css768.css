@@ -27,6 +27,7 @@
 		height: 100%;
 	}
 	#userHome {
+		background: var(--white);
 		transition: 0.2s ease;
 		width: 100%;
 		height: 100%;
@@ -65,6 +66,7 @@
 		justify-content: center;
 	}
 	#chat {
+		margin: 0 auto;
 		box-shadow: 0 2px 4px var(--light-black);
 		border-radius: 5px;
 		transition: 0.5s ease;
@@ -73,7 +75,7 @@
 		margin-top: -180px;
 		max-width: 95vw;
 		background: var(--white);
-		height: 92vh;
+		height: 95vh;
 		justify-content: center;
 	}
 	#columns {
@@ -202,6 +204,227 @@
 	#verifyPanel {
 		width: 100%;
 		height: 100%;
+	}
+
+
+	/* Code for Chat After login*/
+	#chat-left {
+		border-radius: 10px 0 0 10px;
+		width:360px;
+		height: 100%;
+		background: #fff;
+	}
+	#chat-left-head {
+		border-radius: 10px 10px 0 0;
+		width: 100%;
+		height: 70px;
+		padding: 5px 0 10px 10px;
+	}
+	.chat-info {
+		background: inherit;
+		width: 170px;
+		margin: 5px 0px 10px 8px;
+	}
+	.chat-info-username {
+		background: inherit;
+		text-transform: capitalize;
+		font-size: 18px;
+		font-weight: 700;
+		color: #1575e2;
+	}
+	.chat-info-email {
+		background: inherit;
+		color: #4e80a7;
+		font-size: 14px;
+		font-weight: 400;
+	}
+	#chat-tabs{
+		box-shadow: 2px 0 2px 2px #ccc;
+		height: 40px;
+		width: 100%;
+		display: flex;
+	}
+	.chat-tab-option {
+		cursor: pointer;
+		text-align: center;
+		padding: 10px;
+		width: 120px;
+		display: inline;
+		border-bottom: 2px solid #ebe3e3;
+		border-right: 1px solid #ebe3e3;
+	}
+	.chat-tab-option:hover {
+		background: rgb(207, 194, 194);
+	}
+	.chat-tab-selected {
+		background: rgb(235, 229, 229);
+	}
+	.chat-tab-panel-style {
+		transition: ease 2s;
+		box-shadow: 0 0 2px 0 #383535;
+		border-radius: 0 0 0 10px;
+		width: 100%;			
+		height: calc(100% - 110px);
+	}
+	.friend {
+		cursor: pointer;
+		display: flex;
+		flex-direction: row;
+		box-shadow: 0 0 2px 0 #ccc;
+		height: 60px;
+		position: relative;
+		padding: 3px 0 ;
+	}
+	.friend:hover {
+		background: rgb(241, 237, 237);
+	}
+	.friend-info {
+		background: inherit;
+		width: 170px;
+		margin: 5px 0px 10px 8px;
+	}
+	.friend-info-username {
+		background: inherit;
+		text-transform: capitalize;
+		font-size: 18px;
+		color: #000;
+	}
+	.friend-info-email {
+		background: inherit;
+		color: #909497;
+		font-size: 14px;
+		font-weight: 400;
+	}
+	.friend-status {
+		position: relative;
+		background: inherit;
+		font-size: 13px;
+		width: 125px;
+		white-space: nowrap;
+	}
+	.friend-status-connection {
+		width: 100%;
+		background: inherit;
+		margin-left: 0px;
+	}
+	.friend-status-message-count {
+		padding: 2px 7px;
+		border: none;
+		border-radius:30px;
+		background: #11d163;
+		position: absolute;
+		color: white;
+		bottom: 3px;
+		right: 3px;
+	}
+	.request {
+		cursor: pointer;
+		display: flex;
+		flex-direction: row;
+		box-shadow: 0 0 2px 0 #ccc;
+		height: 60px;
+		position: relative;
+		padding: 2px 0 ;
+	}
+	.request:hover {
+		background: rgb(241, 237, 237);
+	}
+	.request-info {
+		background: inherit;
+		width: 170px;
+		margin: 10px 0px 10px 8px;
+	}
+	.request-info-username {
+		background: inherit;
+		text-transform: capitalize;
+		font-size: 18px;
+		color: #000;
+	}
+	.request-info-email {
+		background: inherit;
+		color: #909497;
+		font-size: 14px;
+		font-weight: 400;
+	}
+	.request-response {
+		background: inherit;
+		font-size: 13px;
+		width: 100px;
+		margin: 9px 9px 10px 40px;
+	}
+	#chat-right {
+		border-radius: 0 10px 10px 0;
+		width: calc(100% - 360px);
+		background-image: url("../images/chat-background.png");
+		opacity : 1;
+		background-size:     cover;       
+		background-repeat:   no-repeat;
+		background-position: center center;
+		height: 100%;
+	}
+	#chat-right-head {
+		border-radius: 0 10px 0 0;
+		border-left: 1px solid #ccc;
+		width: 100%;
+		height: 70px;
+		background: var(--white);
+	}
+	#chat-display {
+		background: transparent;
+		width: 100%;
+		height: calc(100% - 70px);
+		border-radius: 0 0 10px 0;
+	}
+	div #chat-display.chat-display-emtpy {
+		height: 100%;
+	}
+	.flex-row {
+		display: flex;
+		flex-direction: row;
+	}
+	#chat-display-default {
+		width: 100%;
+		height: 100%;
+		background: transparent;
+	}
+	#chat-display-custom {
+		width: 100%;
+		height: 100%;
+		background: transparent;
+	}
+	.hidden {
+		display: none;
+	}
+	.chat-profile-image {
+		width: 50px;
+		height: 50px;
+		border-radius: 100%;
+		margin: 3px 3px;
+	}
+	.online {
+		text-align: right;
+		font-size: 15px;
+		color: #11d163;
+	}
+	.confirm-button {
+		border: none;
+		padding: 6px 12px;
+		text-align: center;
+		text-decoration: none;
+		display: inline-block;
+		font-size: 16px;
+		margin: 4px 2px;
+		-webkit-transition-duration: 0.4s; /* Safari */
+		transition-duration: 0.4s;
+		cursor: pointer;
+		background-color: #4367b4;
+		color: white; 
+		border: 2px solid white;
+	}
+	.confirm-button:hover {
+		border: 2px solid #4367b4;
+		background-color: white; 
+		color: #4367b4;
 	}
 }
 @media screen and (max-width: 1100px) {

@@ -11,6 +11,34 @@ getElement = (name) => {
 	return document.getElementById(name);
 }
 
+changeTab = (id) => {
+	let tabs = ['chat-friends-tab' , 'chat-requests-tab' , 'chat-new-tab'];
+	let panels = ['chat-friends-panel' , 'chat-requests-panel' , 'chat-new-panel']
+	for(let i=0; i<tabs.length ;i++) {
+		let tab = tabs[i];
+		if(tab === id) {
+			getElement(id).classList.add('chat-tab-selected');
+			getElement(panels[i]).classList.remove("hidden");
+		} else {
+			getElement(tab).classList.remove('chat-tab-selected');
+			getElement(panels[i]).classList.add("hidden");
+		}
+	}
+}
+
+let userSelected = false;
+selectUser = (id) => {
+	userSelected = true;
+	getElement("chat-display").classList.remove("chat-display-emtpy");
+	getElement("chat-right-head").classList.remove("hidden");
+	getElement("chat-display-default").classList.add("hidden");
+	getElement("chat-display-custom").classList.remove("hidden");
+}
+
+setTimeout(() => {
+selectUser(userSelected);
+},4000);
+
 //If The javascript is enabled start doing
 getElement('errorDiv').classList.add('hidden');
 getElement('mainDivision').classList.remove('hidden');

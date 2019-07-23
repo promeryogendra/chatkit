@@ -85,11 +85,120 @@
 				<div id="header">
 					<div id="heading" class="flex">
 						<img id="appHeaderLogo" src="./images/logo.png" alt="Logo">
-						<div id="headText" ></div>
+						<div id="headText"></div>
 					</div>
 				</div>
-				<div id="chat" class="container flex-column">
-					chat
+				<div id="chat" class="flex-row">
+					<div id="chat-left">
+						<div id="chat-left-head" class="flex-row">
+							<img src="./images/profile-default.png" class="chat-profile-image" alt="Profile">
+							<div class="chat-info flex-column">
+								<div class="chat-info-username">
+									username
+								</div>
+								<div class="chat-info-email">
+									r141040@rguktrkv.ac.in
+								</div>
+							</div>
+						</div>
+						<div id="chat-tabs">
+							<div id="chat-friends-tab" class="chat-tab-option chat-tab-selected" onclick="changeTab('chat-friends-tab')">
+								Friends
+							</div>
+							<div id="chat-requests-tab" class="chat-tab-option" onclick="changeTab('chat-requests-tab')">
+								Requests
+							</div>
+							<div id="chat-new-tab" class="chat-tab-option" onclick="changeTab('chat-new-tab')">
+								New
+							</div>
+						</div>
+						<div id="chat-friends-panel" class="chat-tab-panel-style">
+							<div class="friend">
+								<img class="chat-profile-image" src="./images/profile-default.png" alt="">
+								<div class="friend-info flex-column">
+									<div class="friend-info-username">
+										username
+									</div>
+									<div class="friend-info-email">
+										r141040@rguktrkv.ac.in
+									</div>
+								</div>
+								<div class="friend-status">
+									<div class="friend-status-connection">
+										02/12/1999 09:12 AM
+									</div>
+									<div class="friend-status-message-count">
+										1
+									</div>
+								</div>
+							</div>
+							<div class="friend">
+								<img class="chat-profile-image" src="./images/profile-default.png" alt="">
+								<div class="friend-info flex-column">
+									<div class="friend-info-username">
+										yogendra
+									</div>
+									<div class="friend-info-email">
+										yogendra.rgu@gmail.com
+									</div>
+								</div>
+								<div class="friend-status">
+									<div class="friend-status-connection online">
+										online
+									</div>
+									<div class="friend-status-message-count">
+										14
+									</div>
+								</div>
+							</div>
+						</div>
+						<div id="chat-requests-panel" class="chat-tab-panel-style hidden">
+							<div class="request">
+								<img class="chat-profile-image" src="./images/profile-default.png" alt="">
+								<div class="request-info flex-column">
+									<div class="request-info-username">
+										username
+									</div>
+									<div class="request-info-email">
+										r141040@rguktrkv.ac.in
+									</div>
+								</div>
+								<div class="request-response">
+									<button class="confirm-button">Confirm</button>
+								</div>
+							</div>
+							<div class="request">
+								<img class="chat-profile-image" src="./images/profile-default.png" alt="">
+								<div class="request-info flex-column">
+									<div class="request-info-username">
+										Yogendra
+									</div>
+									<div class="request-info-email">
+										yogendra.rgu@gmail.com
+									</div>
+								</div>
+								<div class="request-response">
+									<button class="confirm-button">Confirm</button>
+								</div>
+							</div>
+						</div>
+						<div id="chat-new-panel" class="chat-tab-panel-style hidden">
+							chat new
+						</div>
+					</div>
+					<div id="chat-right">
+						<div id="chat-right-head" class="hidden">
+							Selected user profile
+						</div>
+						<div id="chat-display" class="chat-display-emtpy">
+							<div id="chat-display-default">
+								chat disply default
+							</div>
+							<div id="chat-display-custom" class="hidden">
+								selected user chat disaply
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>

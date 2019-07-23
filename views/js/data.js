@@ -1,3 +1,4 @@
+
 data = {
 	login : false,
 	username : undefined,
