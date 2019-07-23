@@ -66,16 +66,19 @@
 		justify-content: center;
 	}
 	#chat {
+		font-family: "Times New Roman";
 		margin: 0 auto;
 		box-shadow: 0 2px 4px var(--light-black);
-		border-radius: 5px;
+		border-radius: 10px;
 		transition: 0.5s ease;
+		font-size: 18px;
+		font-weight: 500;
 		position: relative;
 		z-index: 2; 
 		margin-top: -180px;
+		height: 95vh;
 		max-width: 95vw;
 		background: var(--white);
-		height: 95vh;
 		justify-content: center;
 	}
 	#columns {
@@ -239,7 +242,7 @@
 		font-weight: 400;
 	}
 	#chat-tabs{
-		box-shadow: 2px 0 2px 2px #ccc;
+		box-shadow: 1px 0 1px 1px #ccc;
 		height: 40px;
 		width: 100%;
 		display: flex;
