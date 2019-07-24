@@ -241,6 +241,9 @@
 		font-size: 14px;
 		font-weight: 400;
 	}
+	.chat-logout {
+		padding: 10px 10px 10px 20px;
+	}
 	#chat-tabs{
 		box-shadow: 1px 0 1px 1px #ccc;
 		height: 40px;
@@ -269,6 +272,41 @@
 		width: 100%;			
 		height: calc(100% - 110px);
 	}
+
+	/*Search*/
+	.chat-search-container {
+		display: inline-flex;
+		position: relative;
+		border: 1px solid #ccc;
+		border-radius: 5px;
+		overflow: hidden;
+		width: 360px;
+	}
+	.chat-serach-icon {
+		transform: rotateY(180deg);
+		padding: 8px;
+	}
+	
+	.chat-search-box {
+		font-style: "Times New Roman";
+		font-size: 16px;
+		border: 0;
+		padding: 8px 0 8px 0;
+		flex: 1;
+	}
+	.chat-friends-list{
+		width: 360px;
+		overflow: auto;
+		margin-bottom: 1px;
+	}
+	.chat-friends-list{
+		padding: 0 0 8px 0;
+		width: 100%;
+		height: calc(100% - 45px);
+		overflow: auto;
+		margin-bottom: 0px;
+	}
+	/* Single Friend */
 	.friend {
 		cursor: pointer;
 		display: flex;
@@ -284,7 +322,7 @@
 	.friend-info {
 		background: inherit;
 		width: 170px;
-		margin: 5px 0px 10px 8px;
+		margin: 8px 0px 10px 8px;
 	}
 	.friend-info-username {
 		background: inherit;
@@ -320,6 +358,14 @@
 		bottom: 3px;
 		right: 3px;
 	}
+	.chat-request-list{
+		padding: 0 0 8px 0;
+		width: 100%;
+		height: calc(100% - 45px);
+		overflow: auto;
+		margin-bottom: 0px;
+	}
+	/* Single Request */
 	.request {
 		cursor: pointer;
 		display: flex;
@@ -355,6 +401,7 @@
 		width: 100px;
 		margin: 9px 9px 10px 40px;
 	}
+	/* Chat RIGHT AREA */
 	#chat-right {
 		border-radius: 0 10px 10px 0;
 		width: calc(100% - 360px);
