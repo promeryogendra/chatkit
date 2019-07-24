@@ -44,6 +44,8 @@ loginButton.addEventListener('click' , () => {
 					console.log("Login Failure...");
 				}
 			});
+		}else {
+			removeLoading();
 		}
 })
 
