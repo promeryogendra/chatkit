@@ -91,18 +91,7 @@
 				<div id="chat" class="flex-row">
 					<div id="chat-left">
 						<div id="chat-left-head" class="flex-row">
-							<img src="./images/profile-default.png" class="chat-profile-image" alt="Profile">
-							<div class="chat-info flex-column">
-								<div class="chat-info-username">
-									username
-								</div>
-								<div class="chat-info-email">
-									r141040@rguktrkv.ac.in
-								</div>
-							</div>
-							<div class="chat-logout">
-								<button class="confirm-button">LogOut</button>
-							</div>
+							
 						</div>
 						<div id="chat-tabs">
 							<div id="chat-friends-tab" class="chat-tab-option chat-tab-selected" onclick="changeTab('chat-friends-tab')">
@@ -118,161 +107,9 @@
 						<div id="chat-friends-panel" class="chat-tab-panel-style">
 							<div class="chat-search-container">
 								<span class="chat-serach-icon">&#8981; </span>
-								<input class="chat-search-box" type="search" name="search" placeholder="Search...">
+								<input id="chat-friends-search" class="chat-search-box" type="search" name="search" placeholder="Search...">
 							</div>
-							<div class="chat-friends-list">
-								<div class="friend">
-									<img class="chat-profile-image" src="./images/profile-default.png" alt="">
-									<div class="friend-info flex-column">
-										<div class="friend-info-username">
-											username
-										</div>
-										<div class="friend-info-email">
-											r141040@rguktrkv.ac.in
-										</div>
-									</div>
-									<div class="friend-status">
-										<div class="friend-status-connection">
-											02/12/1999 09:12 AM
-										</div>
-										<div class="friend-status-message-count">
-											1
-										</div>
-									</div>
-								</div>
-								<div class="friend">
-									<img class="chat-profile-image" src="./images/profile-default.png" alt="">
-									<div class="friend-info flex-column">
-										<div class="friend-info-username">
-											username
-										</div>
-										<div class="friend-info-email">
-											r141040@rguktrkv.ac.in
-										</div>
-									</div>
-									<div class="friend-status">
-										<div class="friend-status-connection">
-											02/12/1999 09:12 AM
-										</div>
-										<div class="friend-status-message-count">
-											1
-										</div>
-									</div>
-								</div>
-								<div class="friend">
-									<img class="chat-profile-image" src="./images/profile-default.png" alt="">
-									<div class="friend-info flex-column">
-										<div class="friend-info-username">
-											username
-										</div>
-										<div class="friend-info-email">
-											r141040@rguktrkv.ac.in
-										</div>
-									</div>
-									<div class="friend-status">
-										<div class="friend-status-connection">
-											02/12/1999 09:12 AM
-										</div>
-										<div class="friend-status-message-count">
-											1
-										</div>
-									</div>
-								</div>
-								<div class="friend">
-									<img class="chat-profile-image" src="./images/profile-default.png" alt="">
-									<div class="friend-info flex-column">
-										<div class="friend-info-username">
-											yogendra
-										</div>
-										<div class="friend-info-email">
-											yogendra.rgu@gmail.com
-										</div>
-									</div>
-									<div class="friend-status">
-										<div class="friend-status-connection online">
-											online
-										</div>
-										<div class="friend-status-message-count">
-											14
-										</div>
-									</div>
-								</div>
-								<div class="friend">
-									<img class="chat-profile-image" src="./images/profile-default.png" alt="">
-									<div class="friend-info flex-column">
-										<div class="friend-info-username">
-											yogendra
-										</div>
-										<div class="friend-info-email">
-											yogendra.rgu@gmail.com
-										</div>
-									</div>
-									<div class="friend-status">
-										<div class="friend-status-connection online">
-											online
-										</div>
-										<div class="friend-status-message-count">
-											14
-										</div>
-									</div>
-								</div>
-								<div class="friend">
-									<img class="chat-profile-image" src="./images/profile-default.png" alt="">
-									<div class="friend-info flex-column">
-										<div class="friend-info-username">
-											yogendra
-										</div>
-										<div class="friend-info-email">
-											yogendra.rgu@gmail.com
-										</div>
-									</div>
-									<div class="friend-status">
-										<div class="friend-status-connection online">
-											online
-										</div>
-										<div class="friend-status-message-count">
-											14
-										</div>
-									</div>
-								</div>
-								<div class="friend">
-									<img class="chat-profile-image" src="./images/profile-default.png" alt="">
-									<div class="friend-info flex-column">
-										<div class="friend-info-username">
-											yogendra
-										</div>
-										<div class="friend-info-email">
-											yogendra.rgu@gmail.com
-										</div>
-									</div>
-									<div class="friend-status">
-										<div class="friend-status-connection online">
-											online
-										</div>
-										<div class="friend-status-message-count">
-											14
-										</div>
-									</div>
-								</div>
-								<div class="friend">
-									<img class="chat-profile-image" src="./images/profile-default.png" alt="">
-									<div class="friend-info flex-column">
-										<div class="friend-info-username">
-											yogendra
-										</div>
-										<div class="friend-info-email">
-											yogendra.rgu@gmail.com
-										</div>
-									</div>
-									<div class="friend-status">
-										<div class="friend-status-connection online">
-											online
-										</div>
-										<div class="friend-status-message-count">
-											14
-										</div>
-									</div>
-								</div>
+							<div id="chat-friends-list" class="chat-friends-list">
 							</div>
 						</div>
 						<div id="chat-requests-panel" class="chat-tab-panel-style hidden">
@@ -436,6 +273,7 @@
 	<script src="./js/socket.io.js"  type="text/javascript"></script>
 	<script src="./env/env.js" type="text/javascript"></script>
 	<script src="./js/data.js" type="text/javascript"></script>
+	<script src="./js/chatFunctions.js" type="text/javascript"></script>
 	<script src="./js/functions.js"  type="text/javascript"></script>
 	<script src="./js/app.js"  type="text/javascript"></script>
 </html>

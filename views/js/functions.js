@@ -6,10 +6,6 @@ var registerUsernameStatus = false,
 		registerEmailStatus = false,
 		registerPasswordStatus = false;
 
-//Method that return element by taking id as input
-getElement = (name) => {
-	return document.getElementById(name);
-}
 
 changeTab = (id) => {
 	let tabs = ['chat-friends-tab' , 'chat-requests-tab' , 'chat-new-tab'];
@@ -25,19 +21,6 @@ changeTab = (id) => {
 		}
 	}
 }
-
-let userSelected = false;
-selectUser = (id) => {
-	userSelected = true;
-	getElement("chat-display").classList.remove("chat-display-emtpy");
-	getElement("chat-right-head").classList.remove("hidden");
-	getElement("chat-display-default").classList.add("hidden");
-	getElement("chat-display-custom").classList.remove("hidden");
-}
-
-setTimeout(() => {
-selectUser(userSelected);
-},4000);
 
 //If The javascript is enabled start doing
 getElement('errorDiv').classList.add('hidden');
@@ -167,9 +150,7 @@ getUserAuthCookie = () => {
 				if( user!=undefined &&  user.username && user.id && user.email && user.userId) {
 					return ([user , true]);
 				}
-				console.log("un reachable");
 			}catch (error) {
-				console.log(1);
 				return ([undefined , false]);
 			}
 		}
@@ -234,9 +215,22 @@ initialFetch = () => {
 	if(status) {
 		console.log ("before initial fetch",user);
 		socket.emit("afterAuth" , user , (data , status) => {
-			console.log(data,status);
-			authSuccess();
-			removeLoading();
+			if(status) {
+				authSuccess();
+				removeLoading();
+				friends = data[0];
+				messages = data[1];
+				requests = data[2];
+				console.log(requests);
+				createFriendsObjects(friends);
+				getElement("chat-friends-list").innerHTML = generateFriendsList(friendsObjects , messages);
+				let currentUserData = getUserAuthCookie();
+				if(currentUserData[1]) {
+					setHeaderInfo(currentUserData[0]);
+				}
+			}else {
+				removeLoading();
+			}
 		})
 	} else {
 		removeLoading();

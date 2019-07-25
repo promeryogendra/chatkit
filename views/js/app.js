@@ -74,3 +74,6 @@ registerButton.addEventListener('click' , () => {
 	callRegister();
 	
 });
+logoutUser = () => {
+	console.log("logout");
+}

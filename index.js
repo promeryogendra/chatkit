@@ -79,6 +79,7 @@ preProcess = (user , data , callBack) => {
 	let messages = {};
 	friends.forEach(friend => {
 		let userPlaces = getUserPlaces(friend,user);
+		friend.oppositePlace = userPlaces[1];
 		friend.place = userPlaces[0];
 		messages[friend[userPlaces[1]]] = friend.messages;
 		if(onlineUserSockets[friend[userPlaces[1]]] == undefined) {
