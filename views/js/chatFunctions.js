@@ -57,7 +57,6 @@ displayChatMessages = (id) =>{
 
 assignSelectedUser = (friend) => {
 	let oppositePlace = friend.oppositePlace;
-	console.log(friend.oppositePlace);
 	selectedUserUsername = friend[oppositePlace+"username"];
 	selectedUserEmail = friend[oppositePlace+"email"];
 	selectedUserUserId = friend[oppositePlace];
@@ -158,7 +157,6 @@ let chatFriendsSearch = getElement("chat-friends-search");
 chatFriendsSearch.value = "";
 chatFriendsSearch.addEventListener('keyup' , () => {
 			let searchString = chatFriendsSearch.value.replace(" ",'');
-			console.log(searchString);	
 			if(searchString.length == 0) {
 				friends.forEach(friend => {
 					getElement(friend[friend.oppositePlace]).classList.remove("hidden");

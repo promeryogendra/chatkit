@@ -294,6 +294,10 @@
 		padding: 8px 0 8px 0;
 		flex: 1;
 	}
+  /* Remove default */
+	.chat-search-box::-webkit-search-cancel-button {
+  	-webkit-appearance: none;
+	}
 	.chat-friends-list{
 		width: 360px;
 		overflow: auto;
