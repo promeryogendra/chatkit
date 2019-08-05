@@ -8,6 +8,7 @@ data = {
 }
 
 //Data after login
+var myId = "";
 var friends = [];
 var friendsObjects = {};
 var messages = {};

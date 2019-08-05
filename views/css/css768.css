@@ -432,10 +432,6 @@
 	div #chat-display.chat-display-emtpy {
 		height: 100%;
 	}
-	.flex-row {
-		display: flex;
-		flex-direction: row;
-	}
 	#chat-display-default {
 		width: 100%;
 		height: 100%;
@@ -444,6 +440,7 @@
 	#chat-display-custom {
 		width: 100%;
 		height: 100%;
+		max-width: 100%;
 		background: transparent;
 	}
 	.hidden {
@@ -480,6 +477,175 @@
 		background-color: white; 
 		color: #4367b4;
 	}
+
+	/* Chat custom css */
+	.chat-display-custom-messages {
+		max-height: 100%;
+		overflow: auto;
+		width: 100%;
+		height: 100%;
+
+	}	
+	.chat-display-custom-input {
+		background: rgb(240, 235, 235);
+		padding-top: 5px;
+		height: fit-content;
+		position: relative;
+		left: 0;
+		bottom: 0;
+		margin-bottom: 0;
+	}
+	.chat-display-custom-input-box{
+		width: 100%;
+	}
+	.chat-display-custom-input-button {
+		position: relative;
+	}
+	.chat-display-custom-input-button-icon{
+		color: white;
+		margin-left: 5px;
+		cursor: pointer;
+		position: absolute;
+		right: 0;
+		bottom: 0;
+		width: 50px;
+		height: 50px;
+	}
+	.chat-display-custom-input-field{  
+		padding:10px;
+		font-size:17px;
+		line-height: 17px;
+		border-radius:10px;
+		border:6px solid #556677;
+		max-height: 120px;
+		outline: none;
+		resize: none;
+		overflow-x: auto;
+		width: calc(100% - 55px) !important;
+		margin-left: 5px;
+	}
+	::-webkit-scrollbar {
+		margin-left: -2px;
+		width: 10px;
+		cursor: none;
+	}
+	::-webkit-scrollbar-thumb {
+		background: #ccc;
+		border-radius: 6px;
+	}
+
+	/* Messages */
+	@font-face {
+		font-family: "Segoe UI";
+		src: url("../fonts/623c7118249e082fe87a78e08506cb4b.eot"); /* IE9*/
+		src: url("../fonts/623c7118249e082fe87a78e08506cb4b.eot?#iefix") format("embedded-opentype"), /* IE6-IE8 */
+		url("../fonts/623c7118249e082fe87a78e08506cb4b.woff2") format("woff2"), /* chrome、firefox */
+		url("../fonts/623c7118249e082fe87a78e08506cb4b.woff") format("woff"), /* chrome、firefox */
+		url("../fonts/623c7118249e082fe87a78e08506cb4b.ttf") format("truetype"), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
+		url("../fonts/623c7118249e082fe87a78e08506cb4b.svg#Segoe UI") format("svg"); /* iOS 4.1- */
+	}
+	#chat-display-custom-messages {
+		font-family:"Segoe UI",sans-serif;
+		background: transparent;
+		font-weight: 200;
+		padding: 10px;
+	}
+	
+	.message-left {
+		padding: 0 7%;
+		margin: 5px 0;
+	}
+	.message-left-head {
+		color: #fff;
+		margin-top: -7px;
+		margin-right: -2px;
+	}
+	.message-left-content {
+		min-width: 30%;
+		border-radius: 0 8px 8px 8px;
+		padding:  6px 7px 8px 9px;;
+		background: #fff;
+		max-width: 50%;	
+    overflow-wrap: break-word;
+	}
+	.message-left-status {
+		margin-top: -1px;
+		color: rgba(0,0,0,.45);
+		font-size: 11px;
+		height: 15px;
+		line-height: 15px;
+		justify-content: flex-end;
+	}
+	.message-left-status-time{
+		color: #b0b4bd;
+	}
+	.message-left-status-seen{
+		margin-left: 3px;
+		color: #6a748a;
+	}
+	.message-right {
+		padding: 0 7%;
+		margin: 5px 0;
+		flex-direction: row-reverse;
+	}
+	.message-right-head {
+		float: right;
+		color: #dcf8c6;
+		margin-top: -7px;
+		margin-left: -4px;
+	}
+	.message-right-content {
+		min-width: 30%;
+		border-radius: 8px 0 8px 8px;
+		padding:  6px 7px 8px 9px;;
+		background: #dcf8c6;
+		max-width: 50%;
+    overflow-wrap: break-word;
+	}
+	.message-right-status {
+		height: 10px;
+		color: rgba(0,0,0,.45);
+		font-size: 11px;
+		height: 15px;
+		line-height: 15px;
+		justify-content: flex-end;
+	}
+	.message-right-status-time{
+		color: #5e687d;
+	}
+	.message-right-status-seen{
+		margin-left: 3px;
+		color: #5e687d;
+	}
+	.icons {
+		margin-right: 2px;
+	}
+	.icon2 {
+		margin-left: -7px;
+	}
+	.seen {
+		color: #4fc3f7;
+	}
+	.hidden {
+		display: none;
+	}
+	.text-non-selectable {
+		-webkit-touch-callout: none; /* iOS Safari */
+		-webkit-user-select: none; /* Safari */
+		-khtml-user-select: none; /* Konqueror HTML */
+		-moz-user-select: none; /* Firefox */
+		-ms-user-select: none; /* Internet Explorer/Edge */
+		user-select: none; /* Non-prefixed version, currently*/
+	}
+	.text-selectable {
+		-webkit-touch-callout: auto; /* iOS Safari */
+		-webkit-user-select: auto; /* Safari */
+		-khtml-user-select: auto; /* Konqueror HTML */
+		-moz-user-select: auto; /* Firefox */
+		-ms-user-select: auto; /* Internet Explorer/Edge */
+		user-select: auto; /* Non-prefixed version, currently*/
+	
+	}
 }
 @media screen and (max-width: 1100px) {
 	#heading {
@@ -509,5 +675,31 @@
 	#chat {
 		transition: 0.5s ease;
 		max-width: 95vw;
+	}
+}
+
+/* Messages size*/
+@media screen and (min-width : 1200px) {
+	.message-left-content{
+		max-width: 60%;
+	}
+	.message-right-content {
+		max-width: 60%;
+	}
+}
+@media screen and (min-width : 1000px) {
+	.message-left-content{
+		max-width: 70%;
+	}
+	.message-right-content {
+		max-width: 70%;
+	}
+}
+@media screen and (min-width : 800px) {
+	.message-left-content{
+		max-width: 80%;
+	}
+	.message-right-content {
+		max-width: 80%;
 	}
 }

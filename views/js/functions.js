@@ -221,6 +221,7 @@ initialFetch = () => {
 				friends = data[0];
 				messages = data[1];
 				requests = data[2];
+				myId = user.userId;
 				createFriendsObjects(friends);
 				getElement("chat-friends-list").innerHTML = generateFriendsList(friendsObjects , messages);
 				let currentUserData = getUserAuthCookie();

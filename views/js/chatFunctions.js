@@ -51,8 +51,103 @@ getMessageCount = (friend) => {
 	}
 }
 
+//Messages
+//Return the left chat message
+createLeftMessage  = (text , date) => {
+	return `
+		<div class="message-left flex-row text-non-selectable">
+			<span class="message-left-head" >&#9701;</span>
+			<div class="message-left-content">
+				<div class="message-content">
+					${text}
+				</div>
+				<div class="message-left-status flex-row">
+					<div class="message-left-status-time">
+							${date}
+					</div>
+				</div>
+			</div>
+		</div>
+		`
+}
+//Return the right chat message
+createRightMessage = (text , date , seenStatus) => {
+	//Create a right message html with seen Status object
+	let seenStatusString = '<div class="message-right-status-seen ';
+	if(seenStatus === 'seen') {
+		seenStatusString += `
+				seen">
+					<div class="icons">
+						<span class="icon1">
+							&#10004;
+						</span>
+						<span class="icon2">
+							&#10004;
+						</span>
+					</div>
+				</div>
+			`
+	} else {
+		seenStatusString += `
+					notseen">
+					<div class="icons">
+						<span class="icon1">
+							&#10004;
+						</span>
+						<span class="icon2">
+							&#10004;
+						</span>
+					</div>
+				</div>
+			`
+	}
+	return `
+	<div class="message-right flex-row text-non-selectable">
+		<span class="message-right-head" >&#9700;</span>
+		<div class="message-right-content">
+			<div class="message-content">
+				${text}
+			</div>
+			<div class="message-right-status flex-row">
+				<div class="message-right-status-time">
+					${date}
+				</div>`+
+				seenStatusString+`
+		</div>
+	</div>
+	`
+}
+
 displayChatMessages = (id) =>{
-	getElement("chat-display-custom").innerHTML = JSON.stringify(messages[id]);
+	let currentUserMessages = messages[id];
+	let messagesList = getElement("chat-display-custom-messages");
+	let myPlace = friendsObjects[id].place;
+	let notSeen = friendsObjects[id][myPlace+"Count"];
+	getElement("chat-display-custom-messages").innerHTML = "";
+	currentUserMessages.forEach((message , index) => {
+		if(message.senderId === myId) {
+			messagesList.innerHTML += createLeftMessage(message.text , message.date);
+		} else {
+			let status='seen';
+			if(notSeen <= index)
+				status = '';
+			messagesList.innerHTML += createRightMessage(message.text , message.date , status);
+		}
+	});
+}
+//Change messages seen Status
+messagesSeen = (id) => {
+	if(selectedUserUserId===id) {
+		let ele = document.getElementById("chat-display-custom-messages");
+		let messagesList = ele.querySelectorAll(".notseen");
+		for(let i=0; i< messagesList.length ; i++) {
+			messagesList[i].classList.add('seen');
+			messagesList[i].classList.remove('notseen');
+		}
+		//Change the friends objects status
+	} else {
+		//Change the friends objects status
+	}
 }
 
 assignSelectedUser = (friend) => {
@@ -77,6 +172,22 @@ checkMessageStatus = (friend , oppositePlace) => {
 	}
 }
 
+changeSelectedUserHead = (friend) => {
+	let ele = getElement("chat-right-head");
+	let temp = `
+			<img src="./images/profile-default.png" class="chat-profile-image" alt="Profile">
+			<div class="chat-info flex-column">
+				<div class="chat-info-username">
+					${friend[friend.oppositePlace+"username"]}
+				</div>
+				<div class="chat-info-email">
+					${friend.status}
+				</div>
+			</div>
+	`;
+	ele.innerHTML = temp;
+}
+
 friendSelected =(id) => {
 	getElement(id).classList.add("userSelected");
 	if(selectedUser) {
@@ -86,6 +197,7 @@ friendSelected =(id) => {
 			getElement(selectedUserUserId).classList.remove("userSelected");
 			let friend = friendsObjects[id];
 			assignSelectedUser(friend);
+			changeSelectedUserHead(friend);
 			checkMessageStatus(friend,friend.oppositePlace);
 			displayChatMessages(id);
 		}
@@ -97,6 +209,7 @@ friendSelected =(id) => {
 			displayChatMessages(id);
 			getElement("chat-display").classList.remove("chat-display-emtpy");
 			getElement("chat-right-head").classList.remove("hidden");
+			changeSelectedUserHead(friend);
 			getElement("chat-display-default").classList.add("hidden");
 			getElement("chat-display-custom").classList.remove("hidden");
 	}
@@ -199,4 +312,28 @@ changePosition = (id) => {
 	let ele = getElement(id);
 	let friendList = getElement("chat-friends-list");
 	friendList.insertBefore(ele, friendList.childNodes[0]);
+}
+
+//Chat input
+let textpreviousScroll = 0;
+textAreaAdjust = (o) => {
+		o.style.cssText = 'height:auto;padding:0;';
+		o.style.cssText = 'height:' +  (parseInt(o.scrollHeight)+32) + 'px;padding:10px;';
+}
+let textareaInput = getElement("chat-display-custom-input-field");
+textareaInput.addEventListener('keydown' , (e) => {
+	e = e || event;
+	if(e.keyCode == 13) {
+		sendMessage();
+		textAreaAdjust(textareaInput);
+	}
+})
+textareaInput.addEventListener('keypress' , (e) => {
+	e = e || event;
+	if(e.keyCode == 13) {
+		e.preventDefault()}
+})
+sendMessage = () => {
+	console.log(textareaInput.value);
+	textareaInput.value = "";
 }

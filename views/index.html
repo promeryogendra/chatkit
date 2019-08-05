@@ -88,7 +88,7 @@
 						<div id="headText"></div>
 					</div>
 				</div>
-				<div id="chat" class="flex-row">
+				<div id="chat" class="flex-row text-non-selectable">
 					<div id="chat-left">
 						<div id="chat-left-head" class="flex-row">
 							
@@ -104,12 +104,12 @@
 								New
 							</div>
 						</div>
-						<div id="chat-friends-panel" class="chat-tab-panel-style">
+						<div id="chat-friends-panel" class="chat-tab-panel-style text-selectable">
 							<div class="chat-search-container">
 								<span class="chat-serach-icon">&#8981; </span>
 								<input id="chat-friends-search" class="chat-search-box" type="search" name="search" placeholder="Search...">
 							</div>
-							<div id="chat-friends-list" class="chat-friends-list">
+							<div id="chat-friends-list" class="chat-friends-list text-selectable">
 							</div>
 						</div>
 						<div id="chat-requests-panel" class="chat-tab-panel-style hidden">
@@ -251,15 +251,25 @@
 						</div>
 					</div>
 					<div id="chat-right">
-						<div id="chat-right-head" class="hidden">
+						<div id="chat-right-head" class="hidden flex-row">
 							Selected user profile
 						</div>
 						<div id="chat-display" class="chat-display-emtpy">
 							<div id="chat-display-default">
 								chat disply default
 							</div>
-							<div id="chat-display-custom" class="hidden">
-								selected user chat disaply
+							<div id="chat-display-custom" class="flex-column hidden">
+								<div id="chat-display-custom-messages" class="chat-display-custom-messages messages">
+										
+								</div>
+								<div id="chat-display-custom-input" class="chat-display-custom-input flex-row">
+									<div class="chat-display-custom-input-box">
+										<textarea id="chat-display-custom-input-field" class="chat-display-custom-input-field" rows='1' onKeyUp="textAreaAdjust(this)" wrap="hard"></textarea>
+									</div>
+									<div class="chat-display-custom-input-button">
+										<img id="chat-display-custom-input-button-icon" class="chat-display-custom-input-button-icon" src="./images/send.png" alt="" onclick="sendMessage()">
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
