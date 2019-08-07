@@ -1,3 +1,5 @@
+//Initialize socket
+var socket = io.connect();
 
 //Method that return element by taking id as input
 getElement = (name) => {
@@ -337,3 +339,11 @@ sendMessage = () => {
 	console.log(textareaInput.value);
 	textareaInput.value = "";
 }
+//Chat input socket emits
+textareaInput.addEventListener('keypress', () =>{
+	socket.emit('typing',myId,selectedUserUserId);
+})
+//Chat input socket listen
+socket.on('typing', (id) => {
+	console.log("Typing",id);
+})

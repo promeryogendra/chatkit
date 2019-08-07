@@ -63,6 +63,22 @@ sendFriends = (emitEventName , data , userId) => {
 		});
 	}
 }
+//Send Dynamic Event to specific friend
+sendFriend = (emitEventName , data , userId,friendId) => {
+	if(friendsList[userId] != undefined && friendsList[userId].length != 0) {
+		let temp = friendsList[userId];
+		for (let i=0; i < temp.length; i++){
+			let user = temp[i];
+			if( user.userId === friendId) {
+				if(onlineUserSockets[user.userId] != undefined ){
+					let socket =  onlineUserSockets[user.userId]
+					socket.emit(emitEventName , data);
+					break;
+				}
+			}
+		}
+	}
+}
 //Get opposite place
 getUserPlaces = (friend , user) => {
 	if(friend.user1 === user.userId) {
@@ -294,6 +310,10 @@ io.on('connection' ,(socket) => {
 	socket.on('register' , (data , callBack) => {
 		console.log("register " , data);
 		register(data,callBack);
+	})
+	//Typing
+	socket.on('typing' , (userId , friendId) => {
+		sendFriend('typing',userId,userId,friendId);
 	})
 })
 

@@ -1,6 +1,4 @@
 
-//Initialize socket
-var socket = io.connect();
 
 var registerUsernameStatus = false,
 		registerEmailStatus = false,
