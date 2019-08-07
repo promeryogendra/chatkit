@@ -319,10 +319,12 @@ changePosition = (id) => {
 //Chat input
 let textpreviousScroll = 0;
 textAreaAdjust = (o) => {
+		console.log(o.scrollHeight);
 		o.style.cssText = 'height:auto;padding:0;';
 		o.style.cssText = 'height:' +  (parseInt(o.scrollHeight)+32) + 'px;padding:10px;';
 }
 let textareaInput = getElement("chat-display-custom-input-field");
+textareaInput.scrollHeight=0;
 textareaInput.addEventListener('keydown' , (e) => {
 	e = e || event;
 	if(e.keyCode == 13) {

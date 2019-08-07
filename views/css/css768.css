@@ -497,6 +497,7 @@
 	}
 	.chat-display-custom-input-box{
 		width: 100%;
+		height:auto;
 	}
 	.chat-display-custom-input-button {
 		position: relative;
@@ -515,6 +516,7 @@
 		padding:10px;
 		font-size:17px;
 		line-height: 17px;
+		height:auto;
 		border-radius:10px;
 		border:6px solid #556677;
 		max-height: 120px;
@@ -523,6 +525,7 @@
 		overflow-x: auto;
 		width: calc(100% - 55px) !important;
 		margin-left: 5px;
+		overflow-x:hidden;
 	}
 	::-webkit-scrollbar {
 		margin-left: -2px;
