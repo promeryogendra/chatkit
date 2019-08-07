@@ -329,7 +329,6 @@ textareaInput.addEventListener('keydown' , (e) => {
 	e = e || event;
 	if(e.keyCode == 13) {
 		sendMessage();
-		textAreaAdjust(textareaInput);
 	}
 })
 textareaInput.addEventListener('keypress' , (e) => {
@@ -340,6 +339,7 @@ textareaInput.addEventListener('keypress' , (e) => {
 sendMessage = () => {
 	console.log(textareaInput.value);
 	textareaInput.value = "";
+	textAreaAdjust(textareaInput);
 }
 //Chat input socket emits
 textareaInput.addEventListener('keypress', () =>{
