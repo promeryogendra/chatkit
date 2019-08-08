@@ -10,7 +10,6 @@ clearTyping = () => {
 	if(selectedUser)
 		socket.emit('typingStopped',myId,selectedUserUserId);
 	typingStatus = false;
-	clearTimeout(typingTimer);
 }
 changeDataStatus = (id, status) => {
    for(let i in friends) {
@@ -382,15 +381,16 @@ sendMessage = () => {
 }
 //Chat input socket emits
 textareaInput.addEventListener('keypress', (e) =>{
-	if(!typingStatus && e.keyCode!=13) socket.emit('typing',myId,selectedUserUserId);
-	typingStatus = true;
+	if(!typingStatus && e.keyCode!= 13) {
+		socket.emit('typing',myId,selectedUserUserId);
+		typingStatus = true;
+	}
+	console.log(typingStatus , e.keyCode);
 	clearTimeout(typingTimer);
 	typingTimer = setTimeout(function() {
 		socket.emit('typingStopped',myId,selectedUserUserId);
 		typingStatus = false;
 	}, 1000);
-	console.log(e.keyCode);
-	if(e.keyCode === 13)clearTimeout(typingTimer);
 });
 //Chat input socket listen typing started
 socket.on('typing', (id) => {
