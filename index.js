@@ -35,6 +35,7 @@ createObject = (userId , username, email, relation , place) => {
 userOffline = (user) => {
 	delete onlineUserSockets[user.userId];
 	delete friendsList[user.userId];
+	socket.user = undefined;
 	console.log(user.username , " went offline");
 }
 assignUserData = (user , data) => {
@@ -117,7 +118,6 @@ io.on('connection' ,(socket) => {
 	socket.on('disconnect', () => {
 		if(socket.user != undefined && socket.user != {}) {
 			sendFriends("offline",socket.user.userId, socket.user.userId);
-			console.log(1);
 			console.log(socket.user.username , " offline");
 			userOffline(socket.user);
 		}
@@ -127,6 +127,7 @@ io.on('connection' ,(socket) => {
 		if(socket.user != undefined) {
 			console.log(socket.user);
 			sendFriends("offline",socket.user.userId, socket.user.userId);
+			console.log(1);
 			userOffline(socket.user);
 		}
 		callBack(true);
@@ -137,7 +138,7 @@ io.on('connection' ,(socket) => {
 				"access_token" : data[1]
 		})
 		.then((response) => {
-				logoutCall(callBack);
+			logoutCall(callBack);
 		})
 		.catch((error) => {
 			logoutCall(callBack);
