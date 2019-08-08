@@ -54,10 +54,14 @@ assignUserData = (user , data) => {
 }
 //emit a dynamic event ot friends
 sendFriends = (emitEventName , data , userId) => {
+	let i=0;
 	if(friendsList[userId] != undefined && friendsList[userId].length != 0) {
 		friendsList[userId].forEach(user => {
+			console.log(i++,user);
+			//Concentrate on the sending array of objects and whether after disconnect is is removing or not
 			if(onlineUserSockets[user.userId] != undefined ){
-				let socket =  onlineUserSockets[user.userId]
+				let socket =  onlineUserSockets[user.userId];
+				console.log(socket.user.username);
 				socket.emit(emitEventName , data);
 			}
 		});
