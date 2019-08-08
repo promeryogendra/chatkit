@@ -81,6 +81,7 @@ logoutUser = () => {
 	socket.emit('logout', getUserData() , (status) => {
 		authRemoveLoading();
 		authInitial();
+		socket= io.connect();
 		removeCurrentUser();
 	})
 }

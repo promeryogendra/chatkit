@@ -32,11 +32,17 @@ createObject = (userId , username, email, relation , place) => {
 		place : place
 	}
 }
-userOffline = (user , socket) => {
-	delete onlineUserSockets[user.userId];
-	delete friendsList[user.userId];
+printData = () => {
+	console.log(onlineUserSockets);
+	console.log(friendsList);
+}
+userOffline = (userId , socket) => {
+	console.log("---",userId);
+	printData();
+	delete onlineUserSockets[userId];
+	delete friendsList[userId];
 	socket.user = undefined;
-	console.log(user.username , " went offline");
+	printData();
 }
 assignUserData = (user , data) => {
 	friendsList[user.userId] = [];
@@ -57,11 +63,9 @@ sendFriends = (emitEventName , data , userId) => {
 	let i=0;
 	if(friendsList[userId] != undefined && friendsList[userId].length != 0) {
 		friendsList[userId].forEach(user => {
-			console.log(i++,user);
 			//Concentrate on the sending array of objects and whether after disconnect is is removing or not
 			if(onlineUserSockets[user.userId] != undefined ){
 				let socket =  onlineUserSockets[user.userId];
-				console.log(socket.user.username);
 				socket.emit(emitEventName , data);
 			}
 		});
@@ -123,15 +127,15 @@ io.on('connection' ,(socket) => {
 		if(socket.user != undefined && socket.user != {}) {
 			sendFriends("offline",socket.user.userId, socket.user.userId);
 			console.log(socket.user.username , " offline");
-			userOffline(socket.user, socket);
+			userOffline(socket.user.userId, socket);
 		}
 	})
 	//Logout call to user
-	logoutCall = (callBack) => {
+	logoutCall = (callBack,id) => {
 		if(socket.user != undefined) {
-			sendFriends("offline",socket.user.userId, socket.user.userId);
-			console.log(socket.user.username , "logout");
-			userOffline(socket.user, socket);
+			sendFriends("offline",id, id);
+			console.log(id , "logout");
+			userOffline(id, socket);
 		}
 		callBack(true);
 	}
@@ -141,10 +145,10 @@ io.on('connection' ,(socket) => {
 				"access_token" : data[1]
 		})
 		.then((response) => {
-			logoutCall(callBack);
+			logoutCall(callBack,data[0]);
 		})
 		.catch((error) => {
-			logoutCall(callBack);
+			logoutCall(callBack,data[0]);
 		})
 	})
 	//Initial call get data from server
