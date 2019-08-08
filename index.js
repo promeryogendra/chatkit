@@ -130,7 +130,8 @@ io.on('connection' ,(socket) => {
 			userOffline(socket.user.userId, socket);
 		}
 	})
-	//Logout call to user
+	//Logout call to users
+
 	logoutCall = (callBack,id) => {
 		if(socket.user != undefined) {
 			sendFriends("offline",id, id);
