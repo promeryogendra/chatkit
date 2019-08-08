@@ -34,6 +34,7 @@ loginButton.addEventListener('click' , () => {
 		if(result != false) {
 			socket.emit('login' , result , (result , status) => {
 				removeLoading();
+				getElement('loginPassword').value = "";
 				if(status) {
 					setCurrentUser(result);
 					authSuccess();
@@ -74,6 +75,12 @@ registerButton.addEventListener('click' , () => {
 	callRegister();
 	
 });
+//Logout user
 logoutUser = () => {
-	console.log("logout");
+	authLoading();
+	socket.emit('logout', getUserData() , (status) => {
+		authRemoveLoading();
+		authInitial();
+		removeCurrentUser();
+	})
 }

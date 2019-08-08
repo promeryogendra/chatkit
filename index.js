@@ -121,6 +121,30 @@ io.on('connection' ,(socket) => {
 			userOffline(socket.user);
 		}
 	})
+	//Logout call to user
+	logoutCall = (callBack) => {
+		if(socket.user != undefined) {
+			sendFriends("offline",socket.user.userId, socket.user.userId);
+			userOffline(socket.user);
+		}
+		callBack(true);
+	}
+	//Logoout user
+	socket.on('logout', (data,callBack) => {
+		axios.post(config.api+'customer/logout' , {
+				"access_token" : data[1]
+		})
+		.then((response) => {
+			if(response.status == 204) {
+				logoutCall(callBack);
+			}else {
+				logoutCall(callBack);
+			}
+		})
+		.catch((error) => {
+			logoutCall(callBack);
+		})
+	})
 	//Initial call get data from server
 	getInitialData = ((user,callBack) => {
 		axios.get(config.api+'initial' , {

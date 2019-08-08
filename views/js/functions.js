@@ -82,6 +82,7 @@ authLoading = () => {
 	let main = getElement("chat");
 	main.style.zIndex = 1;
 	loader.classList.remove('hidden');
+	
 }
 //Remove loading 
 authRemoveLoading = () => {
@@ -203,9 +204,14 @@ isNoSpecialChracters = (text) => {
 }
 //After successful login
 authSuccess = () => {
-	removeLoading();
+	authRemoveLoading();
 	getElement("appHome").classList.add('hidden');
 	getElement("userHome").classList.remove("hidden");
+}
+//AuthInitial after logout
+authInitial = () => {
+	getElement("appHome").classList.remove('hidden');
+	getElement("userHome").classList.add("hidden");
 }
 //CALL initial fetch
 initialFetch = () => {
@@ -486,4 +492,3 @@ function register ()  {
 		});
 	}
 }
-
