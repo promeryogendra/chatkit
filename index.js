@@ -58,7 +58,6 @@ sendFriends = (emitEventName , data , userId) => {
 		friendsList[userId].forEach(user => {
 			if(onlineUserSockets[user.userId] != undefined ){
 				let socket =  onlineUserSockets[user.userId]
-				console.log("-----------",socket.user.username, user.username , data);
 				socket.emit(emitEventName , data);
 			}
 		});
@@ -126,9 +125,8 @@ io.on('connection' ,(socket) => {
 	//Logout call to user
 	logoutCall = (callBack) => {
 		if(socket.user != undefined) {
-			console.log(socket.user);
 			sendFriends("offline",socket.user.userId, socket.user.userId);
-			console.log(1);
+			console.log(socket.user.username , "logout");
 			userOffline(socket.user, socket);
 		}
 		callBack(true);
