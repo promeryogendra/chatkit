@@ -457,6 +457,19 @@
 		font-size: 15px;
 		color: #11d163;
 	}
+	.offline {
+    text-align: right;
+    font-size: 15px;
+    color: #aab6af;
+	}
+	.online-head {
+		font-size: 15px;
+		color: #11d163;
+	}
+	.offline-head {
+    font-size: 15px;
+    color: #aab6af;
+	}
 	.confirm-button {
 		border: none;
 		padding: 6px 12px;

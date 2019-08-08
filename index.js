@@ -58,7 +58,6 @@ sendFriends = (emitEventName , data , userId) => {
 			if(onlineUserSockets[user.userId] != undefined ){
 				let socket =  onlineUserSockets[user.userId]
 				socket.emit(emitEventName , data);
-				console.log(user.username+" online so sending offline message event.");
 			}
 		});
 	}
@@ -91,6 +90,7 @@ getUserPlaces = (friend , user) => {
 //Process the data
 preProcess = (user , data , callBack) => {
 	// let friends = friendsList[user.userId];
+	sendFriends("online",user.userId,user.userId);
 	let friends = data["friends"];
 	let messages = {};
 	friends.forEach(friend => {
@@ -116,7 +116,8 @@ io.on('connection' ,(socket) => {
 	//On connection Lost
 	socket.on('disconnect', () => {
 		if(socket.user != undefined && socket.user != {}) {
-			sendFriends("offline",undefined, socket.user.userId);
+			sendFriends("offline",socket.user.userId, socket.user.userId);
+			console.log(socket.user.username , " offline");
 			userOffline(socket.user);
 		}
 	})
@@ -314,6 +315,9 @@ io.on('connection' ,(socket) => {
 	//Typing
 	socket.on('typing' , (userId , friendId) => {
 		sendFriend('typing',userId,userId,friendId);
+	})
+	socket.on('typingStopped' , (userId , friendId) => {
+		sendFriend('typingStopped',userId,userId,friendId);
 	})
 })
 

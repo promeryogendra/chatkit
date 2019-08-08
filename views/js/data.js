@@ -21,3 +21,5 @@ var selectedUser = false,
 		selectedUserUserId = undefined,
 		selectedUserFriendId = undefined,
 		selectedUserPlace = undefined;
+		typingTimer = '',
+		typingStatus = false;

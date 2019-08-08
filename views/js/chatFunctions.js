@@ -6,6 +6,22 @@ getElement = (name) => {
 	return document.getElementById(name);
 }
 
+clearTyping = () => {
+	if(selectedUser)
+		socket.emit('typingStopped',myId,selectedUserUserId);
+	typingStatus = false;
+	clearTimeout(typingTimer);
+}
+changeDataStatus = (id, status) => {
+   for(let i in friends) {
+     if (friends[i][friends[i].oppositePlace] === id) {
+        friends[i].status = status;
+        break; //Stop this loop, we found it!
+     }
+   }
+	 friendsObjects[id].status = status;
+}
+
 createFriendsObjects = (friends) => {
 	friends.forEach(friend => {
 		friendsObjects[friend[friend.oppositePlace]] = friend;
@@ -153,6 +169,7 @@ messagesSeen = (id) => {
 }
 
 assignSelectedUser = (friend) => {
+	clearTyping();
 	let oppositePlace = friend.oppositePlace;
 	selectedUserUsername = friend[oppositePlace+"username"];
 	selectedUserEmail = friend[oppositePlace+"email"];
@@ -176,14 +193,20 @@ checkMessageStatus = (friend , oppositePlace) => {
 
 changeSelectedUserHead = (friend) => {
 	let ele = getElement("chat-right-head");
+	let tmp = 'online',_class="online-head";
+	if(friend.status === "offline") {
+		tmp = "offline";
+		_class = "offline-head";
+	}
+
 	let temp = `
 			<img src="./images/profile-default.png" class="chat-profile-image" alt="Profile">
 			<div class="chat-info flex-column">
 				<div class="chat-info-username">
 					${friend[friend.oppositePlace+"username"]}
 				</div>
-				<div class="chat-info-email">
-					${friend.status}
+				<div id="${friend[friend.oppositePlace]}-head" class="chat-info-email ${_class}">
+					${tmp}
 				</div>
 			</div>
 	`;
@@ -222,6 +245,10 @@ generateFriendsList = (friendsObjects , messages) => {
 		let friend = friendsObjects[key];
 		let oppositePlace = friend.oppositePlace;
 		let id = friend[oppositePlace];
+
+		let tmpStatus = 'online';
+		if(friend.status === "offline") tmpStatus = "offline";
+
 		let newMessageCount = getMessageCount(friend);
 		let temp = `
 				<div id="${id}" class="friend" onclick="friendSelected('${id}');console.log('${id}');">
@@ -235,8 +262,8 @@ generateFriendsList = (friendsObjects , messages) => {
 								</div>
 							</div>
 							<div class="friend-status">
-								<div id="${id+"-connection"}" class="friend-status-connection online">
-									${friend.status}
+								<div id="${id+"-connection"}" class="friend-status-connection ${tmpStatus}">
+									${tmpStatus}
 								</div>
 								<div id="${id+"-messageCount"}" class="friend-status-message-count ${newMessageCount[1]}">
 									${newMessageCount[0]}
@@ -290,14 +317,26 @@ chatFriendsSearch.addEventListener('keyup' , () => {
 		})
 
 changeConnectionStatus = (id , status) => {
-	let ele = getElement(id+"-status");
-	if(status == "offline") {
+	let ele = getElement(id+"-connection");
+	if(status === "offline") {
 		ele.classList.remove("online");
+		ele.classList.add("offline");
 	} else {
 		ele.classList.remove("offline");
+		ele.classList.add("online");
 	}
-	ele.classList.add(status);
 	ele.innerHTML = status;
+	if(selectedUserUserId === id) {
+		ele = getElement(id+"-head");
+		if(status === "offline") {
+			ele.classList.remove("online-head");
+			ele.classList.add("offline-head");
+		} else {
+			ele.classList.remove("offline-head");
+			ele.classList.add("online-head");
+		}
+		ele.innerHTML = status;
+	}
 }
 
 changeMessageCount = (id , count) => {
@@ -319,7 +358,6 @@ changePosition = (id) => {
 //Chat input
 let textpreviousScroll = 0;
 textAreaAdjust = (o) => {
-		console.log(o.scrollHeight);
 		o.style.cssText = 'height:auto;padding:0;';
 		o.style.cssText = 'height:' +  (parseInt(o.scrollHeight)+32) + 'px;padding:10px;';
 }
@@ -338,14 +376,42 @@ textareaInput.addEventListener('keypress' , (e) => {
 })
 sendMessage = () => {
 	console.log(textareaInput.value);
-	textareaInput.value = "";
+	textareaInput.value='';
+	clearTyping();
 	textAreaAdjust(textareaInput);
 }
 //Chat input socket emits
-textareaInput.addEventListener('keypress', () =>{
-	socket.emit('typing',myId,selectedUserUserId);
-})
-//Chat input socket listen
+textareaInput.addEventListener('keypress', (e) =>{
+	if(!typingStatus && e.keyCode!=13) socket.emit('typing',myId,selectedUserUserId);
+	typingStatus = true;
+	clearTimeout(typingTimer);
+	typingTimer = setTimeout(function() {
+		socket.emit('typingStopped',myId,selectedUserUserId);
+		typingStatus = false;
+	}, 1000);
+	console.log(e.keyCode);
+	if(e.keyCode === 13)clearTimeout(typingTimer);
+});
+//Chat input socket listen typing started
 socket.on('typing', (id) => {
 	console.log("Typing",id);
+	console.log(friendsObjects[id]);
+	changeConnectionStatus(id, "typing...");
+})
+//Chat input socket listen typing stopped
+socket.on("typingStopped" , (id) => {
+	console.log('typing stpped , ',id);
+	changeConnectionStatus(id,friendsObjects[id].status);
+})
+//Friend went offline
+socket.on("offline" , (id) => {
+	console.log(id,"offline");
+	changeDataStatus(id,"offline");
+	changeConnectionStatus(id,"offline");
+})
+//Friend came online
+socket.on("online" , (id) => {
+	console.log(id,"online");
+	changeDataStatus(id,"online");
+	changeConnectionStatus(id,"online");
 })
