@@ -32,7 +32,7 @@ createObject = (userId , username, email, relation , place) => {
 		place : place
 	}
 }
-userOffline = (user) => {
+userOffline = (user , socket) => {
 	delete onlineUserSockets[user.userId];
 	delete friendsList[user.userId];
 	socket.user = undefined;
@@ -119,7 +119,7 @@ io.on('connection' ,(socket) => {
 		if(socket.user != undefined && socket.user != {}) {
 			sendFriends("offline",socket.user.userId, socket.user.userId);
 			console.log(socket.user.username , " offline");
-			userOffline(socket.user);
+			userOffline(socket.user, socket);
 		}
 	})
 	//Logout call to user
@@ -128,7 +128,7 @@ io.on('connection' ,(socket) => {
 			console.log(socket.user);
 			sendFriends("offline",socket.user.userId, socket.user.userId);
 			console.log(1);
-			userOffline(socket.user);
+			userOffline(socket.user, socket);
 		}
 		callBack(true);
 	}
