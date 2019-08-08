@@ -58,6 +58,7 @@ sendFriends = (emitEventName , data , userId) => {
 		friendsList[userId].forEach(user => {
 			if(onlineUserSockets[user.userId] != undefined ){
 				let socket =  onlineUserSockets[user.userId]
+				console.log("-----------",socket.user.username, user.username , data);
 				socket.emit(emitEventName , data);
 			}
 		});
