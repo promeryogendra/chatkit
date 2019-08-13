@@ -351,7 +351,6 @@ io.on('connection' ,(socket) => {
 	})
 	//New message
 	sendMessage = (message,callBack) => {
-		console.log({...message});
 		axios.post(config.api+"messages" ,{
 			...message
 		}).then((response) => {
