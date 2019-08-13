@@ -38,11 +38,11 @@ printData = () => {
 }
 userOffline = (userId , socket) => {
 	console.log("---",userId);
-	printData();
+	// printData();
 	delete onlineUserSockets[userId];
 	delete friendsList[userId];
 	socket.user = undefined;
-	printData();
+	// printData();
 }
 assignUserData = (user , data) => {
 	friendsList[user.userId] = [];
@@ -63,7 +63,6 @@ sendFriends = (emitEventName , data , userId) => {
 	let i=0;
 	if(friendsList[userId] != undefined && friendsList[userId].length != 0) {
 		friendsList[userId].forEach(user => {
-			//Concentrate on the sending array of objects and whether after disconnect is is removing or not
 			if(onlineUserSockets[user.userId] != undefined ){
 				let socket =  onlineUserSockets[user.userId];
 				socket.emit(emitEventName , data);
@@ -340,7 +339,7 @@ io.on('connection' ,(socket) => {
 	}
 	//Register socket listern
 	socket.on('register' , (data , callBack) => {
-		console.log("register " , data);
+		console.log("register " , data);	
 		register(data,callBack);
 	})
 	//Typing
@@ -349,6 +348,35 @@ io.on('connection' ,(socket) => {
 	})
 	socket.on('typingStopped' , (userId , friendId) => {
 		sendFriend('typingStopped',userId,userId,friendId);
+	})
+	//New message
+	sendMessage = (message,callBack) => {
+		console.log({...message});
+		axios.post(config.api+"messages" ,{
+			...message
+		}).then((response) => {
+			sendFriend('newMessage',response.data , message.senderId , message.receiverId);
+			callBack(true , response.data)
+		})
+		.catch((error) => {
+			callBack(false , undefined);
+		})
+		axios.post(config.api+"updateMessageCount" ,{
+			friendsId : message.friendsId,
+    	userId : message.senderId,
+     	countStatus : "notseen"
+		}).then((response) => {
+			console.log("message count updated");
+		})
+		.catch((error) => {
+			console.log("messageCount can't update",error);
+		})
+		
+	}
+	socket.on('newMessage', (message,callBack) => {
+		message.date = new Date();
+		console.log(message.date)
+		sendMessage(message , callBack);
 	})
 })
 

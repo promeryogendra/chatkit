@@ -8,12 +8,15 @@ data = {
 }
 
 //Data after login
-var myId = "";
 var friends = [];
 var friendsObjects = {};
 var messages = {};
 var requests = [];
 
+// MyData
+var myId = "",
+		myUsername = "",
+		myEmail = "";
 //Chat selected;
 var selectedUser = false,
 		selectedUserUsername = undefined,

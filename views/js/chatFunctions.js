@@ -67,7 +67,10 @@ getMessageCount = (friend) => {
 		return [friend[friend.oppositePlace+"Count"] , "hidden"];
 	}
 }
-
+convertDate = (date) => {
+	let d = new Date(date);
+	return d.toLocaleDateString().replace(/\//g,'/') + " " +d.toLocaleTimeString().replace(/\//g,'/');
+}
 //Messages
 //Return the left chat message
 createLeftMessage  = (text , date) => {
@@ -80,7 +83,7 @@ createLeftMessage  = (text , date) => {
 				</div>
 				<div class="message-left-status flex-row">
 					<div class="message-left-status-time">
-							${date}
+							${convertDate(date)}
 					</div>
 				</div>
 			</div>
@@ -127,7 +130,7 @@ createRightMessage = (text , date , seenStatus) => {
 			</div>
 			<div class="message-right-status flex-row">
 				<div class="message-right-status-time">
-					${date}
+					${convertDate(date)}
 				</div>`+
 				seenStatusString+`
 		</div>
@@ -373,11 +376,40 @@ textareaInput.addEventListener('keypress' , (e) => {
 	if(e.keyCode == 13) {
 		e.preventDefault()}
 })
+//Frind Friend Id
+findFriendId = (id) => {
+	for(let i=0;i<friends.length;i++) {
+		let friend  = friends[i];
+		if(friend.user1 === id || friend.user2 === id) {
+			return friend.id;
+		}
+	}
+}
+//Create message Object 
+createMessageObject = (message) => {
+	return {
+		friendsId : findFriendId(selectedUserUserId),
+		receiverEmail : selectedUserEmail,
+		receiverId : selectedUserUserId,
+		receiverUsername : selectedUserUsername,
+		senderEmail : myEmail,
+		senderId : myId,
+		senderUsername : myUsername,
+		text: message
+		};
+}
 sendMessage = () => {
 	console.log(textareaInput.value);
-	textareaInput.value='';
-	clearTyping();
-	textAreaAdjust(textareaInput);
+	if(textareaInput.value.trim()!== '') {
+		let text = textareaInput.value.trim();
+		let msg = createMessageObject(text);
+		socket.emit('newMessage',msg,(status, data) => {
+			console.log(status , data);
+		})
+		textareaInput.value='';
+		clearTyping();
+		textAreaAdjust(textareaInput);
+	}
 }
 //Chat input socket emits
 textareaInput.addEventListener('keypress', (e) =>{
@@ -385,7 +417,6 @@ textareaInput.addEventListener('keypress', (e) =>{
 		socket.emit('typing',myId,selectedUserUserId);
 		typingStatus = true;
 	}
-	console.log(typingStatus , e.keyCode);
 	clearTimeout(typingTimer);
 	typingTimer = setTimeout(function() {
 		socket.emit('typingStopped',myId,selectedUserUserId);
@@ -395,7 +426,6 @@ textareaInput.addEventListener('keypress', (e) =>{
 //Chat input socket listen typing started
 socket.on('typing', (id) => {
 	console.log("Typing",id);
-	console.log(friendsObjects[id]);
 	changeConnectionStatus(id, "typing...");
 })
 //Chat input socket listen typing stopped
@@ -414,4 +444,8 @@ socket.on("online" , (id) => {
 	console.log(id,"online");
 	changeDataStatus(id,"online");
 	changeConnectionStatus(id,"online");
+})
+//New Message 
+socket.on('newMessage', (data) => {
+	console.log(data);
 })

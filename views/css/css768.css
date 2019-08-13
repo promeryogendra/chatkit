@@ -704,9 +704,9 @@
 }
 @media screen and (min-width : 800px) {
 	.message-left-content{
-		max-width: 80%;
+		max-width: 60%;
 	}
 	.message-right-content {
-		max-width: 80%;
+		max-width: 60%;
 	}
 }
