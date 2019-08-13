@@ -82,6 +82,9 @@ logoutUser = () => {
 		authRemoveLoading();
 		authInitial();
 		socket= io.connect();
+		messages = undefined ;
+		makeDataNull();
+		makeAllDivsNull();
 		removeCurrentUser();
 	})
 }

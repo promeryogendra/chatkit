@@ -1,10 +1,14 @@
 //Initialize socket
 var socket = io.connect();
 
+
 //Method that return element by taking id as input
 getElement = (name) => {
 	return document.getElementById(name);
 }
+
+
+let textareaInput = getElement("chat-display-custom-input-field");
 
 clearTyping = () => {
 	if(selectedUser)
@@ -133,6 +137,7 @@ createRightMessage = (text , date , seenStatus) => {
 					${convertDate(date)}
 				</div>`+
 				seenStatusString+`
+			</div>
 		</div>
 	</div>
 	`
@@ -143,16 +148,17 @@ displayChatMessages = (id) =>{
 	let messagesList = getElement("chat-display-custom-messages");
 	let myPlace = friendsObjects[id].place;
 	let notSeen = friendsObjects[id][myPlace+"Count"];
-	getElement("chat-display-custom-messages").innerHTML = "";
+	messagesList.innerHTML = "";
 	currentUserMessages.forEach((message , index) => {
-		if(message.senderId === myId) {
-			messagesList.innerHTML += createLeftMessage(message.text , message.date);
+		if(message.senderId !== myId) {
+			messagesList.innerHTML = createLeftMessage(message.text , message.date) + messagesList.innerHTML;
 		} else {
 			let status='seen';
-			if(notSeen <= index)
+			if(index <= notSeen)
 				status = '';
-			messagesList.innerHTML += createRightMessage(message.text , message.date , status);
+			messagesList.innerHTML = createRightMessage(message.text , message.date , status) + messagesList.innerHTML;
 		}
+		messagesList.scrollIntoView(false);
 	});
 }
 //Change messages seen Status
@@ -227,6 +233,8 @@ friendSelected =(id) => {
 			changeSelectedUserHead(friend);
 			checkMessageStatus(friend,friend.oppositePlace);
 			displayChatMessages(id);
+			textareaInput.value = "";
+			textareaInput.focus();
 		}
 	} else {
 			selectedUser = true;
@@ -239,6 +247,8 @@ friendSelected =(id) => {
 			changeSelectedUserHead(friend);
 			getElement("chat-display-default").classList.add("hidden");
 			getElement("chat-display-custom").classList.remove("hidden");
+			textareaInput.value = "";
+			textareaInput.focus();
 	}
 }
 generateFriendsList = (friendsObjects , messages) => {
@@ -363,7 +373,6 @@ textAreaAdjust = (o) => {
 		o.style.cssText = 'height:auto;padding:0;';
 		o.style.cssText = 'height:' +  (parseInt(o.scrollHeight)+32) + 'px;padding:10px;';
 }
-let textareaInput = getElement("chat-display-custom-input-field");
 textareaInput.scrollHeight=0;
 textareaInput.addEventListener('keydown' , (e) => {
 	e = e || event;
@@ -398,13 +407,97 @@ createMessageObject = (message) => {
 		text: message
 		};
 }
+//Change Data count
+changeDataCount = (id , status) => {
+	console.log(friends);
+	let place = "user1";
+	if(friendsObjects[id].user2 === id) {
+		place = "user2";
+	}
+	console.log("Write code for change data	");
+	if(status === "notseen") {
+		friendsObjects[id][place+"Count"] += 1;
+		friendsObjects[id][place+"Status"] = status;
+	} else {
+		friendsObjects[id][place+"Count"] = 0;
+		friendsObjects[id][place+"Status"] = "seen";
+	}
+	console.log(friends[1]);
+	for(let i = 0; i<friends.length ;i++) {
+		console.log(friends[i][place])
+		if (friends[i][place] === id) {
+			console.log(friends[i][place+"Count"]);
+			if(status === "notseen") {
+				friends[i][place+"Count"] += 1;
+				friends[i][place+"Status"] = status;
+			} else {
+				friends[i][place+"Count"] = 0;
+				friends[i][place+"Status"] = "seen";
+			}
+			console.log(friends[i][place+"Count"]);
+			break; //Stop this loop, we found it!
+		}
+	}
+	console.log(friends[2]);
+}
+
+//Update message array
+updateMessageArray = (message,id) => {
+	let tempMessages = messages[id];
+	for(let i=0;i<tempMessages.length ; i++) {
+		let tmp = tempMessages[i];
+		console.log(new Date(message.date) > new Date(tmp.date));
+		if(new Date(message.date) > new Date(tmp.date)) {
+			console.log(message);
+			messages[id].splice(i,0,message);
+			if(i==0) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+	}
+	return undefined;
+}
+
+//Add message messages Array Based on reciver Id and Sender Id
+addMessage = (message) => {
+	let result = false;
+	if(message.senderId === myId) {
+		changeDataCount(message.receiverId , "notseen");
+		if(selectedUserUserId === message.receiverId) {
+			result = updateMessageArray(message,message.receiverId);
+			//Currently update the message array and also messages display
+		} else {
+			result = updateMessageArray(message,message.receiverId);
+			//Update only messages array
+		}
+		displayChatMessages(message.receiverId)
+	} else {
+		changeDataCount(message.senderId , "notseen");
+		if(selectedUserUserId === message.senderId) {
+			result = updateMessageArray(message,message.senderId);
+			//Currently update the message array and also messages display
+		} else {
+			result = updateMessageArray(message,message.senderId);
+			//Update only messages array
+		}
+		displayChatMessages(message.senderId);
+	}
+	console.log(friendsObjects[id])
+}
 sendMessage = () => {
 	console.log(textareaInput.value);
 	if(textareaInput.value.trim()!== '') {
 		let text = textareaInput.value.trim();
 		let msg = createMessageObject(text);
-		socket.emit('newMessage',msg,(status, data) => {
-			console.log(status , data);
+		socket.emit('newMessage',msg,(status, message) => {
+			if(status) {
+				console.log("Message came return perfectly...");
+				addMessage(message);
+			} else {
+				console.log("Something went wrong...");
+			}
 		})
 		textareaInput.value='';
 		clearTyping();
@@ -446,6 +539,13 @@ socket.on("online" , (id) => {
 	changeConnectionStatus(id,"online");
 })
 //New Message 
-socket.on('newMessage', (data) => {
-	console.log(data);
+socket.on('newMessage', (message) => {
+	if(selectedUserUserId === message.receiverId) {
+		console.log("Message recieved successfully and user is selected...");
+		addMessage(message);
+	} else {
+		console.log("Message recieved successfully and user is not selected...");
+		addMessage(message);
+	}
 })
+//Update status of seen or notseen

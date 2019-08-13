@@ -26,3 +26,23 @@ var selectedUser = false,
 		selectedUserPlace = undefined;
 		typingTimer = '',
 		typingStatus = false;
+//Make data null
+makeDataNull = () => {
+	messages = {};
+	requests = [];
+	friendsObjects = {};
+	friends = [];
+
+	myId = "",
+	myUsername = "",
+	myEmail = "";
+
+	selectedUser = false,
+	selectedUserUsername = undefined,
+	selectedUserEmail = undefined,
+	selectedUserUserId = undefined,
+	selectedUserFriendId = undefined,
+	selectedUserPlace = undefined;
+	typingTimer = '',
+	typingStatus = false;
+}

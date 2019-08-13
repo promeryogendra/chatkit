@@ -494,3 +494,13 @@ function register ()  {
 		});
 	}
 }
+//Make all Divs Null 
+makeAllDivsNull = () => {
+	getElement("chat-display").classList.add("chat-display-emtpy");
+	getElement("chat-right-head").classList.add("hidden");
+	getElement("chat-display-default").classList.remove("hidden");
+	getElement("chat-display-custom").classList.add("hidden");
+	getElement("chat-friends-list").innerHTML = "";
+	getElement("chat-left-head").innerHTML = "";
+	textareaInput.value = "";
+}
