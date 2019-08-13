@@ -484,7 +484,6 @@ addMessage = (message) => {
 		}
 		displayChatMessages(message.senderId);
 	}
-	console.log(friendsObjects[id])
 }
 sendMessage = () => {
 	console.log(textareaInput.value);
