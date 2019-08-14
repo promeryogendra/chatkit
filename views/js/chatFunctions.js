@@ -428,9 +428,7 @@ updateMessageArray = (message,id) => {
 	let tempMessages = messages[id];
 	for(let i=0;i<tempMessages.length ; i++) {
 		let tmp = tempMessages[i];
-		console.log(new Date(message.date) > new Date(tmp.date));
 		if(new Date(message.date) > new Date(tmp.date)) {
-			console.log(message);
 			messages[id].splice(i,0,message);
 			if(i==0) {
 				return true;
