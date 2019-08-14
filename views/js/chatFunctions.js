@@ -158,8 +158,8 @@ displayChatMessages = (id) =>{
 				status = '';
 			messagesList.innerHTML = createRightMessage(message.text , message.date , status) + messagesList.innerHTML;
 		}
-		messagesList.scrollIntoView(false);
 	});
+	messagesList.lastElementChild.scrollIntoView(false);
 }
 //Change messages seen Status
 messagesSeen = (id) => {
@@ -409,12 +409,10 @@ createMessageObject = (message) => {
 }
 //Change Data count
 changeDataCount = (id , status) => {
-	console.log(friends);
 	let place = "user1";
 	if(friendsObjects[id].user2 === id) {
 		place = "user2";
 	}
-	console.log("Write code for change data	");
 	if(status === "notseen") {
 		friendsObjects[id][place+"Count"] += 1;
 		friendsObjects[id][place+"Status"] = status;
@@ -422,23 +420,7 @@ changeDataCount = (id , status) => {
 		friendsObjects[id][place+"Count"] = 0;
 		friendsObjects[id][place+"Status"] = "seen";
 	}
-	console.log(friends[1]);
-	for(let i = 0; i<friends.length ;i++) {
-		console.log(friends[i][place])
-		if (friends[i][place] === id) {
-			console.log(friends[i][place+"Count"]);
-			if(status === "notseen") {
-				friends[i][place+"Count"] += 1;
-				friends[i][place+"Status"] = status;
-			} else {
-				friends[i][place+"Count"] = 0;
-				friends[i][place+"Status"] = "seen";
-			}
-			console.log(friends[i][place+"Count"]);
-			break; //Stop this loop, we found it!
-		}
-	}
-	console.log(friends[2]);
+	console.log("message count updated");
 }
 
 //Update message array
@@ -459,30 +441,56 @@ updateMessageArray = (message,id) => {
 	}
 	return undefined;
 }
-
+//Temp function1 for createing right message
+tempFunction1 = (result , message) => {
+	console.log(message,result);
+	if(result) {
+		let ele = getElement("chat-display-custom-messages");
+		ele.innerHTML += createRightMessage(message.text , message.date , '') 
+		ele.lastElementChild.scrollIntoView(false);
+		console.log("-")
+	} else {
+		displayChatMessages(message.receiverId)
+	}
+}
+//Temp function1 for createing left message
+tempFunction2 = (result , message) => {
+	console.log(message,result);
+	if(result) {
+		let ele = getElement("chat-display-custom-messages");
+		ele.innerHTML += createLeftMessage(message.text , message.date ) 
+		ele.lastElementChild.scrollIntoView(false);
+		console.log()
+	} else {
+		displayChatMessages(message.receiverId)
+	}
+}
 //Add message messages Array Based on reciver Id and Sender Id
 addMessage = (message) => {
 	let result = false;
 	if(message.senderId === myId) {
+		changePosition(message.receiverId);
 		changeDataCount(message.receiverId , "notseen");
 		if(selectedUserUserId === message.receiverId) {
 			result = updateMessageArray(message,message.receiverId);
-			//Currently update the message array and also messages display
+			tempFunction1(result,message);
 		} else {
 			result = updateMessageArray(message,message.receiverId);
-			//Update only messages array
+			tempFunction1(result,message);
 		}
-		displayChatMessages(message.receiverId)
 	} else {
+		changePosition(message.senderId);
 		changeDataCount(message.senderId , "notseen");
 		if(selectedUserUserId === message.senderId) {
 			result = updateMessageArray(message,message.senderId);
+			tempFunction2(result,message);
 			//Currently update the message array and also messages display
 		} else {
 			result = updateMessageArray(message,message.senderId);
+			tempFunction2(result,message);
+			console.log(friendsObjects[friendsObjects.oppositePlace+"Count"]);
 			//Update only messages array
 		}
-		displayChatMessages(message.senderId);
 	}
 }
 sendMessage = () => {
