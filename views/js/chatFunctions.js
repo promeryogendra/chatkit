@@ -550,7 +550,6 @@ socket.on("offline" , (id) => {
 //Friend came online
 socket.on("online" , (id) => {
 	console.log(id,"online");
-	console.log(id);
 	changeDataStatus(id,"online");
 	changeConnectionStatus(id,"online");
 })
