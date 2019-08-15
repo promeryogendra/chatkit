@@ -377,6 +377,22 @@ io.on('connection' ,(socket) => {
 		console.log(message.date)
 		sendMessage(message , callBack);
 	})
+	//MESSAGES SEEN EVET LISTEN
+	socket.on("messagesSeen",(myId , hisId,friendId,callBack) => {
+		axios.post(config.api+"updateMessageCount" ,{
+			friendsId : friendId,
+    	userId : hisId,
+     	countStatus : "seen"
+		}).then((response) => {
+			console.log("seen message count updated");
+			callBack(true);
+			sendFriend('messagesSeen',myId , myId , hisId);
+		})
+		.catch((error) => {
+			callBack(false);
+			console.log("seen messageCount can't update",error);
+		})
+	})
 })
 
 http.listen(PORT , ()=> {

@@ -158,6 +158,7 @@ displayChatMessages = (id) =>{
 				status = '';
 			messagesList.innerHTML = createRightMessage(message.text , message.date , status) + messagesList.innerHTML;
 		}
+		// getElement("chat-display-custom-messages").lastElementChild.scrollIntoView(false);
 	});
 	messagesList.lastElementChild.scrollIntoView(false);
 }
@@ -220,7 +221,20 @@ changeSelectedUserHead = (friend) => {
 	`;
 	ele.innerHTML = temp;
 }
-
+//Send messages seen event
+sendMessagesSeenEvent = (id) => {
+	if(friendsObjects[id][friendsObjects[id].oppositePlace+"Count"] !== 0) {
+		socket.emit("messagesSeen",myId , id,friendsObjects[id].id, (status) => {
+			if(status) {
+				console.log("i have seen his messages return event",status);
+				changeDataCount(id,"seen");
+				changeMessageCount(id,0);
+			} else {
+				console.log("i have seen his messages return event",status);
+			}
+		});
+	}
+}
 friendSelected =(id) => {
 	getElement(id).classList.add("userSelected");
 	if(selectedUser) {
@@ -232,6 +246,7 @@ friendSelected =(id) => {
 			assignSelectedUser(friend);
 			changeSelectedUserHead(friend);
 			checkMessageStatus(friend,friend.oppositePlace);
+			sendMessagesSeenEvent(selectedUserUserId);
 			displayChatMessages(id);
 			textareaInput.value = "";
 			textareaInput.focus();
@@ -247,6 +262,7 @@ friendSelected =(id) => {
 			changeSelectedUserHead(friend);
 			getElement("chat-display-default").classList.add("hidden");
 			getElement("chat-display-custom").classList.remove("hidden");
+			sendMessagesSeenEvent(selectedUserUserId);
 			textareaInput.value = "";
 			textareaInput.focus();
 	}
@@ -350,7 +366,6 @@ changeConnectionStatus = (id , status) => {
 		ele.innerHTML = status;
 	}
 }
-
 changeMessageCount = (id , count) => {
 	let ele = getElement(id+"-messageCount");
 	if(count == 0) {
@@ -360,13 +375,11 @@ changeMessageCount = (id , count) => {
 	}
 	ele.innerHTML = count;
 }
-
 changePosition = (id) => {
 	let ele = getElement(id);
 	let friendList = getElement("chat-friends-list");
 	friendList.insertBefore(ele, friendList.childNodes[0]);
 }
-
 //Chat input
 let textpreviousScroll = 0;
 textAreaAdjust = (o) => {
@@ -422,7 +435,6 @@ changeDataCount = (id , status) => {
 	}
 	console.log("message count updated");
 }
-
 //Update message array
 updateMessageArray = (message,id) => {
 	let tempMessages = messages[id];
@@ -474,7 +486,6 @@ addMessage = (message) => {
 			tempFunction1(result,message);
 		} else {
 			result = updateMessageArray(message,message.receiverId);
-			tempFunction1(result,message);
 		}
 	} else {
 		changePosition(message.senderId);
@@ -485,8 +496,7 @@ addMessage = (message) => {
 			//Currently update the message array and also messages display
 		} else {
 			result = updateMessageArray(message,message.senderId);
-			tempFunction2(result,message);
-			console.log(friendsObjects[friendsObjects.oppositePlace+"Count"]);
+			changeMessageCount( message.senderId ,friendsObjects[message.senderId][friendsObjects[message.senderId].oppositePlace+"Count"]);
 			//Update only messages array
 		}
 	}
@@ -540,17 +550,24 @@ socket.on("offline" , (id) => {
 //Friend came online
 socket.on("online" , (id) => {
 	console.log(id,"online");
+	console.log(id);
 	changeDataStatus(id,"online");
 	changeConnectionStatus(id,"online");
 })
 //New Message 
 socket.on('newMessage', (message) => {
-	if(selectedUserUserId === message.receiverId) {
+	if(selectedUserUserId === message.senderId) {
 		console.log("Message recieved successfully and user is selected...");
 		addMessage(message);
+		sendMessagesSeenEvent(selectedUserUserId);
 	} else {
 		console.log("Message recieved successfully and user is not selected...");
 		addMessage(message);
 	}
 })
 //Update status of seen or notseen
+socket.on("messagesSeen" , (id) => {
+	console.log("messages seen by " ,id);
+	changeDataCount(id,"seen");
+	messagesSeen(id);
+})
