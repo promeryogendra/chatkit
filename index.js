@@ -79,6 +79,7 @@ sendFriend = (emitEventName , data , userId,friendId) => {
 			if( user.userId === friendId) {
 				if(onlineUserSockets[user.userId] != undefined ){
 					let socket =  onlineUserSockets[user.userId]
+					console.log(userId,friendId,data);
 					socket.emit(emitEventName , data);
 					break;
 				}
@@ -355,26 +356,26 @@ io.on('connection' ,(socket) => {
 			...message
 		}).then((response) => {
 			sendFriend('newMessage',response.data , message.senderId , message.receiverId);
-			callBack(true , response.data)
+			callBack(true , response.data);
+			axios.post(config.api+"updateMessageCount" ,{
+				friendsId : message.friendsId,
+				userId : message.senderId,
+				countStatus : "notseen"
+			}).then((response) => {
+				console.log("message count updated");
+			})
+			.catch((error) => {
+				console.log("messageCount can't update",error);
+			})
 		})
 		.catch((error) => {
 			callBack(false , undefined);
 		})
-		axios.post(config.api+"updateMessageCount" ,{
-			friendsId : message.friendsId,
-    	userId : message.senderId,
-     	countStatus : "notseen"
-		}).then((response) => {
-			console.log("message count updated");
-		})
-		.catch((error) => {
-			console.log("messageCount can't update",error);
-		})
+		
 		
 	}
 	socket.on('newMessage', (message,callBack) => {
 		message.date = new Date();
-		console.log(message.date)
 		sendMessage(message , callBack);
 	})
 	//MESSAGES SEEN EVET LISTEN
