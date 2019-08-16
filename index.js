@@ -79,7 +79,6 @@ sendFriend = (emitEventName , data , userId,friendId) => {
 			if( user.userId === friendId) {
 				if(onlineUserSockets[user.userId] != undefined ){
 					let socket =  onlineUserSockets[user.userId]
-					console.log(userId,friendId,data);
 					socket.emit(emitEventName , data);
 					break;
 				}
@@ -173,15 +172,36 @@ io.on('connection' ,(socket) => {
 			callBack(undefined , false);
 		})
 	})
+	//Ask for confirmation to user
+	askForConformation = (user) => {
+		let sock = onlineUserSockets[user.userId];
+		sock.emit("confirmMe" , (status) => {
+			if(status) {
+				return true;
+			} else {
+				return false;
+			}
+		})
+	}
 	//Initial call
 	initialCall = (user,callBack) => {
 		if(userCheck(user)) {
-			socket.user = user;
-			onlineUserSockets[user.userId] = socket;
-			let soc = onlineUserSockets[user.userId];
-			getInitialData(user,callBack);
+				socket.user = user;
+				onlineUserSockets[user.userId] = socket;
+				let soc = onlineUserSockets[user.userId];
+				getInitialData(user,callBack);
 		}else {
-			//User already exists
+			if(askForConformation(user)) {
+				console.log("User confirmed");
+			} else {
+				sendFriends("offline",user.userId, user.userId);
+				console.log(socket.user.username , " removing due to not confirmation");
+				userOffline(user.userId, socket);
+				socket.user = user;
+				onlineUserSockets[user.userId] = socket;
+				let soc = onlineUserSockets[user.userId];
+				getInitialData(user,callBack);
+			}
 		}
 	}
 	//After successfull login

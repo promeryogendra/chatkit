@@ -504,3 +504,7 @@ makeAllDivsNull = () => {
 	getElement("chat-left-head").innerHTML = "";
 	textareaInput.value = "";
 }
+//Confirm me
+socket.on("confirmMe", (callBack) => {
+	callBack(true);
+})
