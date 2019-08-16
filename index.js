@@ -369,6 +369,7 @@ io.on('connection' ,(socket) => {
 			})
 		})
 		.catch((error) => {
+			console.log("Can't insert message into server.");
 			callBack(false , undefined);
 		})
 		
