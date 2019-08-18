@@ -32,6 +32,15 @@ createObject = (userId , username, email, relation , place) => {
 		place : place
 	}
 }
+
+createFriendObject = (friend , id) => {
+	if(friend.user1 === id) {
+			return createObject(friend.user2 , friend.user2username , friend.user2email , friend.id , "user2");
+		}else {
+			return createObject(friend.user1 , friend.user1username , friend.user1email , friend.id , "user1");
+		}
+}
+
 printData = () => {
 	console.log(onlineUserSockets);
 	console.log(friendsList);
@@ -44,6 +53,7 @@ userOffline = (userId , socket) => {
 	socket.user = undefined;
 	// printData();
 }
+//Assign data in server
 assignUserData = (user , data) => {
 	friendsList[user.userId] = [];
 	let friends = data['friends'];
@@ -87,10 +97,10 @@ sendFriend = (emitEventName , data , userId,friendId) => {
 	}
 }
 //Get opposite place
-getUserPlaces = (friend , user) => {
-	if(friend.user1 === user.userId) {
+getUserPlaces = (friend , userId) => {
+	if(friend.user1 === userId) {
 		return ["user1" , "user2"];
-	}else if(friend.user2 === user.userId) {
+	}else if(friend.user2 === userId) {
 		return ["user2","user1"];
 	} 
 	return [null , null];
@@ -102,7 +112,7 @@ preProcess = (user , data , callBack) => {
 	let friends = data["friends"];
 	let messages = {};
 	friends.forEach(friend => {
-		let userPlaces = getUserPlaces(friend,user);
+		let userPlaces = getUserPlaces(friend,user.userId);
 		friend.oppositePlace = userPlaces[1];
 		friend.place = userPlaces[0];
 		messages[friend[userPlaces[1]]] = friend.messages;
@@ -119,6 +129,36 @@ preProcess = (user , data , callBack) => {
 	// });
 	callBack([friends , messages , requests],true);
 }
+
+//Remove friend
+removeRequest = (userId, requestId , friend) => {
+	for(i=0; i<requestList[userId].length ; i++) {
+		if(requestList[userId][i].id === requestId) {
+			requestList[userId].splice(i,1);
+			break; //Stop this loop, we found it!
+		}
+	}
+	friendsList[userId].push(createFriendObject(friend,userId));
+	if(friendsList[friend.user1] != undefined) {
+		friendsList[friend.user1].push(createFriendObject(friend,friend.user1));
+	}
+	friend.status="offline";
+	if(onlineUserSockets[friend.user1]) {
+		//Send that the friend confirmed
+		let tempFriend = friend;
+		let userPlaces = getUserPlaces(friend,friend.user1);
+		tempFriend.oppositePlace = userPlaces[1];
+		tempFriend.place = userPlaces[0];
+		tempFriend.status = "online";
+		friend.status = "online";
+		sendFriend("requestAccepted",[requestId,tempFriend],friend.user2,friend.user1);
+	}
+	let userPlaces = getUserPlaces(friend,friend.user2);
+	friend.oppositePlace = userPlaces[1];
+	friend.place = userPlaces[0];
+	return friend;
+}
+
 io.on('connection' ,(socket) => {
 	console.log("Socket Connection made...");
 	//On connection Lost
@@ -414,6 +454,29 @@ io.on('connection' ,(socket) => {
 			callBack(false);
 			console.log("seen messageCount can't update",error);
 		})
+	})
+	//Confirm request function
+	confirmRequest = (userId, requestId , callBack) => {
+		axios.post(config.api+"confirmRequest" ,{
+			requestId : requestId
+		}).then((response) => {
+			if(response.status == 200) {
+				console.log(response.data)
+				let data = removeRequest(userId,requestId,response.data);
+				callBack(true,requestId,data);
+			} else {
+				callBack(false,undefined);
+			}
+		})
+		.catch((error) => {
+			callBack(false,undefined);
+			console.log("seen messageCount can't update",error);
+		})
+	}
+	//Confirm request listen
+	socket.on("confirmRequest" , (userId , requestId , callBack) => {
+		console.log(userId,requestId,requestList[userId]);
+		confirmRequest(userId,requestId,callBack);
 	})
 })
 

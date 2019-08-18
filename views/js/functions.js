@@ -75,22 +75,6 @@ removeLoading = () => {
 	let element = getElement("Authentication");
 	element.style.zIndex = 2;
 }
-//Loading Please
-authLoading = () => {
-	let loader = getElement("loading");
-	loader.style.zIndex = 2;
-	let main = getElement("chat");
-	main.style.zIndex = 1;
-	loader.classList.remove('hidden');
-	
-}
-//Remove loading 
-authRemoveLoading = () => {
-	let loader = getElement("loading");
-	loader.classList.add('hidden');
-	let element = getElement("chat");
-	element.style.zIndex = 2;
-}
 //Methid that handle the tab clicks
 changeLoginTab = () => {
 	var loginTab = getElement('tabLogin');
@@ -222,6 +206,7 @@ initialFetch = () => {
 			if(status) {
 				authSuccess();
 				removeLoading();
+				authLoading();
 				friends = data[0];
 				messages = data[1];
 				requests = data[2];
@@ -229,11 +214,13 @@ initialFetch = () => {
 				myEmail = user.email;
 				myUsername = user.username;
 				createFriendsObjects(friends);
-				getElement("chat-friends-list").innerHTML = generateFriendsList(friendsObjects , messages);
+				createRequestList(requests);
+				getElement("chat-friends-list").innerHTML = generateFriendsList(friendsObjects , sortMessageTimings(messages));
 				let currentUserData = getUserAuthCookie();
 				if(currentUserData[1]) {
 					setHeaderInfo(currentUserData[0]);
 				}
+				authRemoveLoading();
 			}else {
 				removeLoading();
 			}

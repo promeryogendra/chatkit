@@ -10,11 +10,30 @@ getElement = (name) => {
 
 let textareaInput = getElement("chat-display-custom-input-field");
 
+
+//Loading Please
+authLoading = () => {
+	let loader = getElement("loading");
+	loader.style.zIndex = 2;
+	let main = getElement("chat");
+	main.style.zIndex = 1;
+	loader.classList.remove('hidden');
+	
+}
+//Remove loading 
+authRemoveLoading = () => {
+	let loader = getElement("loading");
+	loader.classList.add('hidden');
+	let element = getElement("chat");
+	element.style.zIndex = 2;
+}
+
 clearTyping = () => {
 	if(selectedUser)
 		socket.emit('typingStopped',myId,selectedUserUserId);
 	typingStatus = false;
 }
+
 changeDataStatus = (id, status) => {
    for(let i in friends) {
      if (friends[i][friends[i].oppositePlace] === id) {
@@ -30,6 +49,32 @@ createFriendsObjects = (friends) => {
 		friendsObjects[friend[friend.oppositePlace]] = friend;
 	});
 } 
+
+//Crete a request object
+createRequestList = (requests) => {
+	let ele = getElement("chat-request-list");
+	// ele.innerHTML = "";
+	requests.forEach(request => {
+			let temp = `
+				<div id="${request.id}" class="request">
+					<img class="chat-profile-image" src="./images/profile-default.png" alt="">
+					<div class="request-info flex-column">
+						<div class="request-info-username">
+							${request.user1username}
+						</div>
+						<div class="request-info-email">
+							${request.user1email}
+						</div>
+					</div>
+					<div class="request-response">
+						<button class="confirm-button" onclick="requestSelected('${request.id}');">Confirm</button>
+					</div>
+				</div>
+			`;
+			ele.innerHTML = temp + ele.innerHTML;
+	});
+
+}
 
 getEmptyObjects = (data) => {
 	let result = {};
@@ -71,6 +116,7 @@ getMessageCount = (friend) => {
 		return [friend[friend.oppositePlace+"Count"] , "hidden"];
 	}
 }
+
 convertDate = (date) => {
 	let d = new Date(date);
 	return d.toLocaleDateString().replace(/\//g,'/') + " " +d.toLocaleTimeString().replace(/\//g,'/');
@@ -158,7 +204,7 @@ displayChatMessages = (id) =>{
 				status = '';
 			messagesList.innerHTML = createRightMessage(message.text , message.date , status) + messagesList.innerHTML;
 		}
-		// getElement("chat-display-custom-messages").lastElementChild.scrollIntoView(false);
+		getElement("chat-display-custom-messages").lastElementChild.scrollIntoView(false);
 	});
 	messagesList.lastElementChild.scrollIntoView(false);
 }
@@ -207,7 +253,6 @@ changeSelectedUserHead = (friend) => {
 		tmp = "offline";
 		_class = "offline-head";
 	}
-
 	let temp = `
 			<img src="./images/profile-default.png" class="chat-profile-image" alt="Profile">
 			<div class="chat-info flex-column">
@@ -266,6 +311,17 @@ friendSelected =(id) => {
 			textareaInput.value = "";
 			textareaInput.focus();
 	}
+}
+confirmRequest = (id) => {
+	socket.emit("confirmRequest",myId,id, (status, requestId , friend) => {
+		authRemoveLoading();
+		console.log(status,requestId,friend);
+	});
+}
+requestSelected = (id) => {
+	authLoading();
+	console.log('request selected',id);
+	confirmRequest(id);
 }
 generateFriendsList = (friendsObjects , messages) => {
 	let listString = '';
@@ -569,4 +625,8 @@ socket.on("messagesSeen" , (id) => {
 	console.log("messages seen by " ,id);
 	changeDataCount(id,"seen");
 	messagesSeen(id);
+})
+//Request Accepted
+socket.on("requestAccepted", ([requestId , data]) => {
+	console.log("request accepted",requestId , data);
 })
