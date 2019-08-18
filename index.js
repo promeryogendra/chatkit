@@ -461,7 +461,6 @@ io.on('connection' ,(socket) => {
 			requestId : requestId
 		}).then((response) => {
 			if(response.status == 200) {
-				console.log(response.data)
 				let data = removeRequest(userId,requestId,response.data);
 				callBack(true,requestId,data);
 			} else {
@@ -475,7 +474,6 @@ io.on('connection' ,(socket) => {
 	}
 	//Confirm request listen
 	socket.on("confirmRequest" , (userId , requestId , callBack) => {
-		console.log(userId,requestId,requestList[userId]);
 		confirmRequest(userId,requestId,callBack);
 	})
 })

@@ -56,7 +56,7 @@ createRequestList = (requests) => {
 	// ele.innerHTML = "";
 	requests.forEach(request => {
 			let temp = `
-				<div id="${request.id}" class="request">
+				<div id="${request.id}-request" class="request">
 					<img class="chat-profile-image" src="./images/profile-default.png" alt="">
 					<div class="request-info flex-column">
 						<div class="request-info-username">
@@ -309,19 +309,8 @@ friendSelected =(id) => {
 			getElement("chat-display-custom").classList.remove("hidden");
 			sendMessagesSeenEvent(selectedUserUserId);
 			textareaInput.value = "";
-			textareaInput.focus();
+			textareaInput.focus(); 
 	}
-}
-confirmRequest = (id) => {
-	socket.emit("confirmRequest",myId,id, (status, requestId , friend) => {
-		authRemoveLoading();
-		console.log(status,requestId,friend);
-	});
-}
-requestSelected = (id) => {
-	authLoading();
-	console.log('request selected',id);
-	confirmRequest(id);
 }
 generateFriendsList = (friendsObjects , messages) => {
 	let listString = '';
@@ -380,26 +369,47 @@ setHeaderInfo = (user) => {
 }
 
 let chatFriendsSearch = getElement("chat-friends-search");
+let chatRequestsSearch = getElement("chat-requests-search");
+
 chatFriendsSearch.value = "";
 chatFriendsSearch.addEventListener('keyup' , () => {
-			let searchString = chatFriendsSearch.value.replace(" ",'');
-			if(searchString.length == 0) {
-				friends.forEach(friend => {
-					getElement(friend[friend.oppositePlace]).classList.remove("hidden");
-				});
-			} else { 
-				friends.forEach(friend => {
-					let oppositePlace = friend.oppositePlace;
-					if(friend[oppositePlace+"username"].includes(searchString) || friend[oppositePlace+"email"].includes(searchString)) {
-						getElement(friend[oppositePlace]).classList.remove("hidden");
-					}else {
-						getElement(friend[oppositePlace]).classList.add("hidden");
-					}
-				});
-			}
-			
-		})
+		let searchString = chatFriendsSearch.value.replace(" ",'');
+		if(searchString.length == 0) {
+			friends.forEach(friend => {
+				getElement(friend[friend.oppositePlace]).classList.remove("hidden");
+			});
+		} else { 
+			friends.forEach(friend => {
+				let oppositePlace = friend.oppositePlace;
+				if(friend[oppositePlace+"username"].includes(searchString) || friend[oppositePlace+"email"].includes(searchString)) {
+					getElement(friend[oppositePlace]).classList.remove("hidden");
+				}else {
+					getElement(friend[oppositePlace]).classList.add("hidden");
+				}
+			});
+		}
+		
+	})
 
+chatRequestsSearch.value = '';
+chatRequestsSearch.addEventListener('keyup' , () => {
+		let searchString = chatRequestsSearch.value.replace(" ",'');
+		if(searchString.length == 0) {
+			requests.forEach(request => {
+				getElement(request.id+"-request").classList.remove("hidden");
+			});
+		} else { 
+			requests.forEach(request => {
+				console.log(request.user1username,request.user1email);
+				if( request.user1username.includes(searchString) || request.user1email.includes(searchString) ) {
+						console.log("search true");
+					getElement(request.id+"-request").classList.remove("hidden");
+				}else {
+					getElement(request.id+"-request").classList.add("hidden");
+				}
+			});
+		}
+	})
 changeConnectionStatus = (id , status) => {
 	let ele = getElement(id+"-connection");
 	if(status === "offline") {
@@ -587,6 +597,43 @@ textareaInput.addEventListener('keypress', (e) =>{
 		typingStatus = false;
 	}, 1000);
 });
+//Confirm request function
+confirmRequestFunction = (id) => {
+	socket.emit("confirmRequest",myId,id, (status, requestId , friend) => {
+		if(status) {
+			for(let i=0;i<requests.length;i++) {
+				if(requests[i].id === requestId) {
+					requests.splice(i,1);
+					break;
+				}
+			}
+			getElement("chat-request-list").removeChild(getElement(requestId+"-request"));
+			friends.push(friend);
+			friendsObjects[friend[friend.oppositePlace]]=friend;
+			messages[friend[friend.oppositePlace]]=[]
+			getElement("chat-friends-list").innerHTML = generateFriendsList(friendsObjects , sortMessageTimings(messages));
+			console.log(1);
+		} else {
+			console.log("request not conformed");
+		}
+		authRemoveLoading();
+		console.log(status,requestId,friend);
+	});
+}
+requestSelected = (id) => {
+	authLoading();
+	console.log('request selected',id);
+	confirmRequestFunction(id);
+}
+//RequestAccepted
+RequestAccepted = (friend) => {
+	authLoading();
+	friends.unshift(friend);
+	friendsObjects[friend[friend.oppositePlace]]= friend;
+	messages[friend[friend.oppositePlace]]=[];
+	getElement("chat-friends-list").innerHTML = generateFriendsList(friendsObjects , sortMessageTimings(messages));
+	authRemoveLoading();
+}
 //Chat input socket listen typing started
 socket.on('typing', (id) => {
 	console.log("Typing",id);
@@ -627,6 +674,7 @@ socket.on("messagesSeen" , (id) => {
 	messagesSeen(id);
 })
 //Request Accepted
-socket.on("requestAccepted", ([requestId , data]) => {
-	console.log("request accepted",requestId , data);
+socket.on("requestAccepted", ([requestId , friend]) => {
+	RequestAccepted(friend)
+	console.log("request accepted",requestId , friend);
 })
