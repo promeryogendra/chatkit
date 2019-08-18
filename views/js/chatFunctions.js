@@ -204,9 +204,13 @@ displayChatMessages = (id) =>{
 				status = '';
 			messagesList.innerHTML = createRightMessage(message.text , message.date , status) + messagesList.innerHTML;
 		}
-		getElement("chat-display-custom-messages").lastElementChild.scrollIntoView(false);
+		if(currentUserMessages.length!=0) {
+			getElement("chat-display-custom-messages").lastElementChild.scrollIntoView(false);
+		}
 	});
-	messagesList.lastElementChild.scrollIntoView(false);
+	if(currentUserMessages.length!=0) {
+		getElement("chat-display-custom-messages").lastElementChild.scrollIntoView(false);
+	}
 }
 //Change messages seen Status
 messagesSeen = (id) => {
