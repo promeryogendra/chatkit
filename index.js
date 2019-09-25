@@ -88,7 +88,7 @@ sendFriend = (emitEventName , data , userId,friendId) => {
 			let user = temp[i];
 			if( user.userId === friendId) {
 				if(onlineUserSockets[user.userId] != undefined ){
-					let socket =  onlineUserSockets[user.userId]
+					let socket =  onlineUserSockets[friendId]
 					socket.emit(emitEventName , data);
 					break;
 				}
@@ -159,7 +159,7 @@ removeRequest = (userId, requestId , friend) => {
 	return friend;
 }
 
-io.on('connection' ,(socket) => {
+io.sockets.on('connection' ,(socket) => {
 	console.log("Socket Connection made...");
 	//On connection Lost
 	socket.on('disconnect', () => {
@@ -227,19 +227,19 @@ io.on('connection' ,(socket) => {
 	initialCall = (user,callBack) => {
 		if(userCheck(user)) {
 				socket.user = user;
+				socket.userId = user.userId;
+				socket.id=user.userId;
 				onlineUserSockets[user.userId] = socket;
-				let soc = onlineUserSockets[user.userId];
 				getInitialData(user,callBack);
 		}else {
 			if(askForConformation(user)) {
 				console.log("User confirmed");
 			} else {
 				sendFriends("offline",user.userId, user.userId);
-				console.log(socket.user.username , " removing due to not confirmation");
+				console.log(user.username , " removing due to not confirmation");
 				userOffline(user.userId, socket);
 				socket.user = user;
 				onlineUserSockets[user.userId] = socket;
-				let soc = onlineUserSockets[user.userId];
 				getInitialData(user,callBack);
 			}
 		}
@@ -285,6 +285,8 @@ io.on('connection' ,(socket) => {
 		})
 		.then((response) => {
 			if(response.status == 200) {
+				//Tommorow go with the work in sockets before initial fetch
+				// onlineUserSockets[credentials[0]]=socket;
 				callBack(true);
 			} else {
 				callBack(false);

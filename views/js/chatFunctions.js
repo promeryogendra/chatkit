@@ -662,7 +662,7 @@ socket.on("online" , (id) => {
 })
 //New Message 
 socket.on('newMessage', (message) => {
-	if(selectedUserUserId === message.senderId) {
+	if(selectedUserUserId === message.sender) {
 		console.log("Message recieved successfully and user is selected...");
 		addMessage(message);
 		sendMessagesSeenEvent(selectedUserUserId);
