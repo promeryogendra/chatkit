@@ -190,6 +190,7 @@ createRightMessage = (text , date , seenStatus) => {
 }
 
 displayChatMessages = (id) =>{
+	authLoading();
 	let currentUserMessages = messages[id];
 	let messagesList = getElement("chat-display-custom-messages");
 	let myPlace = friendsObjects[id].place;
@@ -211,6 +212,7 @@ displayChatMessages = (id) =>{
 	if(currentUserMessages.length!=0) {
 		getElement("chat-display-custom-messages").lastElementChild.scrollIntoView(false);
 	}
+	authRemoveLoading();
 }
 //Change messages seen Status
 messagesSeen = (id) => {
