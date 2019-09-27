@@ -204,9 +204,9 @@ displayChatMessages = (id) =>{
 				status = '';
 			messagesList.innerHTML = createRightMessage(message.text , message.date , status) + messagesList.innerHTML;
 		}
-		if(currentUserMessages.length!=0) {
-			getElement("chat-display-custom-messages").lastElementChild.scrollIntoView(false);
-		}
+		// if(currentUserMessages.length!=0) {
+		// 	getElement("chat-display-custom-messages").lastElementChild.scrollIntoView(false);
+		// }
 	});
 	if(currentUserMessages.length!=0) {
 		getElement("chat-display-custom-messages").lastElementChild.scrollIntoView(false);
