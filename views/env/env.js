@@ -1,7 +1,7 @@
 var config = {
 	appName : "ChatKit",
 	appSubHead : "4 Things that make your realtionship strong.",
-	appSubDivData : ["Time" , "Understanding" , "Converstion" , "Honesty"],
+	appSubDivData : ["Time" , "Understanding" , "Conversation" , "Honesty"],
 	socketConnecttion : "https://chatkitweb.herokuapp.com/",
 	socketPort : "4200"
 }
